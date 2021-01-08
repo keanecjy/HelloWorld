@@ -1,20 +1,7 @@
 import logo from "./HelloWorldLogo.svg";
 import "./App.css";
-import { io } from "socket.io-client";
-const SERVER_URL = "http://localhost:5000";
 
 function App() {
-  // Socket.io connections between client and server
-  const socket = io(SERVER_URL, {
-    withCredentials: true,
-    extraHeaders: {
-      "my-custom-header": "abcd",
-    },
-  });
-
-  socket.on("connected", (message) => {
-    console.log(message);
-  });
 
   return (
     <div className="App">
