@@ -11,13 +11,17 @@ const mongoose = require("mongoose");
 const { queryParser } = require("express-query-parser");
 const helmet = require("helmet");
 const compression = require("compression");
+const Message = require("./models/Message");
+const User = require("./models/User");
+const isEmpty = require("lodash/isEmpty");
 
 // Initialize app to a server
 const app = express();
 const server = require("http").createServer(app);
+
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:64226"],
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,
@@ -27,7 +31,7 @@ const cors = require("cors");
 
 var corsOptions = {
   // Specifies the origin(s) from which a server request can occur aside from its own origin
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "http://localhost:64226"],
 };
 
 app.use(cors(corsOptions));
@@ -75,14 +79,93 @@ const options = {
 
 // Socket.io connections between client and server
 io.on("connection", (socket) => {
-  console.log("Successfully established a new connection");
-  console.log(socket.id);
+  User.find({})
+    .sort({ _id: 1 })
+    .then((users) => {
+      socket.emit("outputUser", users);
 
-  socket.emit("connected", "New user connected");
+      Message.find({})
+        .limit(100)
+        .sort({ _id: 1 })
+        .then((messages) => {
+          socket.emit("outputMessage", messages);
+          socket.emit("connected", null);
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+
+  const setStatus = (msg) => {
+    socket.emit("status", msg);
+  };
+
+  socket.on("inputUser", (data) => {
+    const newUser = new User({
+      _id: socket.id,
+      username: data.username,
+      lat: data.lat,
+      long: data.long,
+    });
+
+    newUser
+      .save()
+      .then((user) => {
+        io.emit("outputUser", [user]);
+      })
+      .catch((err) => console.log(err));
+  });
+
+  socket.on("inputMessage", (data) => {
+    if (isEmpty(data.username) || isEmpty(data.text)) {
+      setStatus("Please enter name and text");
+    } else {
+      const newMessage = new Message({
+        username: data.username,
+        text: data.text,
+      });
+
+      newMessage
+        .save()
+        .then((message) => {
+          io.emit("outputMessage", [message]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+
+  socket.on("inputPosition", (data) => {
+    if (isEmpty(data.username) || isEmpty(data.long) || isEmpty(data.lat)) {
+      setStatus("No username, long, or lan included");
+    } else {
+      User.findOne({ _id: socket.id })
+        .then((userToUpdate) => {
+          if (!userToUpdate) {
+            console.log(
+              `User with username ${data.username} does not exist in database`
+            );
+          } else {
+            userToUpdate.long = data.long;
+            userToUpdate.lat = data.lat;
+            userToUpdate
+              .save()
+              .then((updatedUser) => {
+                io.emit("outputPosition", [updatedUser]);
+              })
+              .catch((err) => console.log(err));
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  });
 
   socket.on("disconnect", () => {
-    console.log("A user has left");
-    console.log(socket.id);
+    User.findOneAndDelete({ _id: socket.id })
+      .then(() => {
+        socket.broadcast.emit("userLeft", socket.id);
+      })
+      .catch((err) => console.log(err));
   });
 });
 
