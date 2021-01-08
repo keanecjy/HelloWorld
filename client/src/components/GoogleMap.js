@@ -1,73 +1,56 @@
-import React, { Component } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import supercluster from 'points-cluster';
 
 import './GoogleMap.css';
+import UserPin from './mapobject/UserPin';
+import Cluster from './mapobject/Cluster';
+import { StateContext } from '../App';
 
-import UserPin from './MapObject/UserPin';
-import Cluster from './MapObject/Cluster';
-import { defaultStartCoords, fakeUsers } from '../util/fakeUsers';
-
-class GoogleMap extends Component {
-  state = {
-    mapOptions: {
-      center: this.props.center || defaultStartCoords,
-      zoom: this.props.zoom || 15,
+function createMapOptions(maps) {
+  return {
+    zoomControlOptions: {
+      position: maps.ControlPosition.LEFT_CENTER,
+      style: maps.ZoomControlStyle.SMALL,
     },
-
-    onlineUsers: this.props.onlineUsers || fakeUsers,
-
-    clusters: [],
   };
+}
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.center !== this.props.center) {
-      this.setState({
-        mapOptions: {
-          center: this.props.center,
-          // zoom: 15
-        },
+function GoogleMap({ users }) {
+  const { mapOptions, setMapOptions } = useContext(StateContext);
+  const [clusters, setClusters] = useState([]);
+
+  useEffect(() => {
+    if (mapOptions && mapOptions.bounds) {
+      const clusters = supercluster(users, {
+        minZoom: 0,
+        maxZoom: 16,
+        radius: 60,
       });
+
+      console.log(mapOptions);
+      setClusters(
+        clusters(mapOptions).map(({ wx, wy, numPoints, points }) => ({
+          lat: wy,
+          lng: wx,
+          numPoints: numPoints,
+          id: `${numPoints}_${points[0].id}`,
+          points: points,
+        }))
+      );
     }
-  }
+  }, [mapOptions]);
 
-  createClusters = (props) => {
-    const clusters = supercluster(this.state.onlineUsers, {
-      minZoom: 0,
-      maxZoom: 16,
-      radius: 60,
-    });
-    this.setState({
-      clusters: clusters(this.state.mapOptions).map(({ wx, wy, numPoints, points }) => ({
-        lat: wy,
-        lng: wx,
-        numPoints: numPoints,
-        // id: `${numPoints}_${points[0].id}`
-        points: points,
-      })),
-    });
-  };
-
-  onMapChange = ({ center, zoom, bounds }) => {
-    this.setState(
-      {
-        mapOptions: { center, zoom, bounds },
-      },
-      () => this.createClusters(this.props)
-    );
-  };
-
-  render() {
-    const { clusters, onlineUsers, mapOptions } = this.state;
-    return (
-      <div className={'google-map'}>
-        {/*<UsersCount count={onlineUsers.length}/>*/}
+  return (
+    <div className={'google-map'}>
+      {mapOptions && (
         <GoogleMapReact
           bootstrapURLKeys={{ key: process.env.REACT_APP_GMAPS_API }}
           center={mapOptions.center}
           zoom={mapOptions.zoom}
-          onChange={this.onMapChange}
+          onChange={({ center, zoom, bounds }) => setMapOptions({ center, zoom, bounds })}
           yesIWantToUseGoogleMapApiInternals={true}
+          options={createMapOptions}
         >
           {clusters.map((groups) => {
             if (groups.numPoints === 1) {
@@ -91,9 +74,9 @@ class GoogleMap extends Component {
             }
           })}
         </GoogleMapReact>
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 }
 
 export default GoogleMap;

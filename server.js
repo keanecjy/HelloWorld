@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
       username: data.username,
       avatar: data.avatar,
       lat: data.lat,
-      long: data.long,
+      lng: data.lng,
     });
     newUser
       .save()
@@ -144,15 +144,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on('inputPosition', (data) => {
-    if (isEmpty(data.long) || isEmpty(data.lat)) {
-      setStatus('No username, long, or lan included');
+    if (!data.lng || !data.lat) {
+      setStatus('No lng or lat included', data);
     } else {
       User.findOne({ _id: socket.id })
         .then((userToUpdate) => {
           if (!userToUpdate) {
             console.log(`User with ID ${socket.id} does not exist in database`);
           } else {
-            userToUpdate.long = data.long;
+            userToUpdate.lng = data.lng;
             userToUpdate.lat = data.lat;
             userToUpdate
               .save()

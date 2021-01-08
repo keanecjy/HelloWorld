@@ -1,86 +1,137 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import GoogleMap from './components/GoogleMap';
+
+import './App.css';
+import logo from './HelloWorldLogo.svg';
+import { fakeUsers } from './util/fakeUsers';
 import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
+import GoogleMap from './components/GoogleMap';
 
 const SERVER_URL = 'http://localhost:5000';
 export const StateContext = React.createContext({});
 
+const SG_POSITION = { lat: 1.3521, lng: 103.8198 };
+
 function App() {
+  // Global Variables
+  const [initialScreen, setScreen] = useState(true);
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [mapOptions, setMapOptions] = useState(null);
+
+  const [users, setUsers] = useState(fakeUsers);
+  const [numOnline, setNumOnline] = useState(0);
+  const [messages, setMessages] = useState([]);
+
+  // Map Coordinates
+  const [currLocation, setCurrLocation] = useState(SG_POSITION);
+
   useEffect(() => {
-    const socket = io('http://localhost:5000', {
+    const socket = io(SERVER_URL, {
       withCredentials: true,
       extraHeaders: {
         'my-custom-header': 'abcd',
       },
     });
 
-    // socket.on('connect', (message) => {
-    //   console.log('A new user has connected');
-    // });
+    socket.on('connect', (message) => {
+      console.log('A new user has connected');
+    });
 
-    // socket.on('status', (msg) => {
-    //   console.log(msg);
-    // });
+    socket.on('status', (msg) => {
+      console.log(msg);
+    });
 
-    // socket.emit('inputUser', {
-    //   username: 'test',
-    //   lat: '0000',
-    //   long: '20000',
-    //   avatar: 'male1',
-    // });
+    socket.on('outputUser', (allUsers) => {
+      users.map((user) => console.log('user ' + user.username + ' joined'));
+      setUsers({ ...users, allUsers });
+    });
 
-    // socket.on('outputUser', (users) =>
-    //   users.map((user) => console.log('user ' + user.username + ' joined'))
-    // );
+    socket.on('outputPosition', (newUsers) => {
+      newUsers.map((user) =>
+        console.log('user ' + user.username + ' moved to ' + user.long + ' ' + user.lat)
+      );
+      const ids = new Set(newUsers.map((u) => u.id));
+      setUsers([...newUsers, ...users.filter((u) => !ids.has(u.id))]);
+    });
 
-    // socket.emit('inputMessage', {
-    //   text: 'Hello to you too!',
-    // });
+    socket.on('onlineUsers', (number) => {
+      console.log('users: ' + number);
+      setNumOnline(number);
+    });
 
-    // socket.emit('inputPosition', {
-    //   lat: '1200',
-    //   long: '3000',
-    // });
+    socket.on('userLeft', (userId) => {
+      console.log('user ' + userId + ' left');
+      setUsers([...users.filter((u) => u.id !== userId)]);
+    });
 
-    // socket.on('outputPosition', (users) => {
-    //   users.map((user) =>
-    //     console.log('user ' + user.username + ' moved to ' + user.long + ' ' + user.lat)
-    //   );
-    // });
+    socket.on('outputMessage', (messages) => {
+      messages.map((message) => console.log(message.text));
+      setMessages(messages);
+    });
 
-    // socket.on('onlineUsers', (number) => {
-    //   console.log('users: ' + number);
-    // });
+    // get location
+    if ('geolocation' in navigator) {
+      console.log('Location enabled');
 
-    // socket.on('outputMessage', (messages) => {
-    //   messages.map((message) => console.log(message.text));
-    // });
+      navigator.geolocation.getCurrentPosition((position) => {
+        const location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setCurrLocation(location);
+        setMapOptions({ center: location, zoom: 15 });
 
-    // socket.on('userLeft', (userId) => console.log('user ' + userId + ' left'));
+        // add user
+        socket.emit('inputUser', {
+          username: name,
+          avatar: image,
+          ...location,
+        });
+      });
 
-    // const isInitialized = window.localStorage.getItem('initialized');
-    // if (isInitialized) {
-    //   setScreen(false);
-    // }
+      navigator.geolocation.watchPosition((position) => {
+        if (
+          currLocation.lat !== position.coords.latitude ||
+          currLocation.lng !== position.coords.longitude
+        ) {
+          const location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+
+          setCurrLocation(location);
+          console.log(location);
+          socket.emit('inputPosition', location);
+        }
+      });
+    } else {
+      console.log('Location disabled');
+      socket.emit('inputUser', {
+        username: name,
+        avatar: image,
+        ...currLocation,
+      });
+    }
+
+    socket.emit('inputMessage', {
+      text: "Hello everybody, I'm " + name,
+    });
+
+    const isInitialized = window.localStorage.getItem('initialized');
+    if (isInitialized) {
+      setScreen(false);
+    }
   }, []);
-
-  // Coordinates
-  const currLocation = { lat: 1.3521, lng: 103.8198 };
-  const [coordinates, setCoordinates] = useState(currLocation);
-
-  // Global variables
-  const [initialScreen, setScreen] = useState(true);
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
 
   const contextProviderValue = {
     name,
     setName,
     image,
     setImage,
+    mapOptions,
+    setMapOptions,
   };
 
   return (
@@ -88,13 +139,10 @@ function App() {
       <StateContext.Provider value={contextProviderValue}>
         {initialScreen && <LoginModal />}
         <NameHolder />
-        <GoogleMap center={coordinates} zoom={15} />
+        <GoogleMap users={users} />
         <button
-          className="recenter-button"
-          onClick={() => {
-            console.log('CLICKED');
-            setCoordinates(currLocation);
-          }}
+          className={'recenter-button'}
+          onClick={() => setMapOptions({ center: currLocation, zoom: 15 })}
         >
           RE-CENTER
         </button>
