@@ -145,8 +145,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("inputPosition", (data) => {
-    if (isEmpty(data.lng) || isEmpty(data.lat)) {
-      setStatus("No lng or lat included");
+    if (!data.lng || !data.lat) {
+      setStatus("No lng or lat included", data);
     } else {
       User.findOne({ _id: socket.id })
         .then((userToUpdate) => {
