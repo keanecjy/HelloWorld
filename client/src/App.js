@@ -1,3 +1,10 @@
+import React, { useState, useEffect } from 'react';
+import logo from './HelloWorldLogo.svg';
+import './App.css';
+import io from 'socket.io-client';
+import GoogleMap from './components/GoogleMap';
+import GoogleMapReact from 'google-map-react';
+import { defaultStartCoords, fakeUsers } from './util/fakeUsers';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import io from 'socket.io-client';
@@ -6,7 +13,6 @@ import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
 
 const SERVER_URL = 'http://localhost:5000';
-export const StateContext = React.createContext({});
 
 function App() {
   useEffect(() => {
