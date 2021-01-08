@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import ModalPicker from '../avatarpicker/ModalPicker';
-import { StateContext } from '../../main-app/Screen';
+import { StateContext } from '../../App';
 
 const NameHolder = () => {
   const { name, setName } = useContext(StateContext);

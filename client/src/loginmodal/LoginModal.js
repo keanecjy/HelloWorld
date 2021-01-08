@@ -1,10 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import './styles.css';
-import ListOfImages from "../component/picturecontainer/ListOfImages";
-import { StateContext } from "../main-app/Screen";
+import ListOfImages from '../component/picturecontainer/ListOfImages';
+import { StateContext } from '../App';
+import io from 'socket.io-client';
 
 const LoginModal = () => {
+  const socket = io('http://localhost:5000', {
+    withCredentials: true,
+    extraHeaders: {
+      'my-custom-header': 'abcd',
+    },
+  });
 
   const { name, image, setName, setImage } = useContext(StateContext);
   const [show, setShow] = useState(true);
@@ -12,14 +19,14 @@ const LoginModal = () => {
   const handleSubmit = (event) => {
     setShow(false);
     event.preventDefault();
-
+    window.localStorage.setItem('initialized', 'yes');
     // Name set
     window.localStorage.setItem('name', name);
     const newUser = {
       userName: name,
       avatar: image,
-    }
-    socket.emit("inputUser", newUser);
+    };
+    socket.emit('inputUser', newUser);
   };
 
   const handleChange = (event) => setName(event.target.value);

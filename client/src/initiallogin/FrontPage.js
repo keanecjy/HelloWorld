@@ -11,7 +11,6 @@ const FrontPage = ({ setScreen }) => {
       <button
         onClick={() => {
           setScreen(false);
-          window.localStorage.setItem('initialized', 'yes');
         }}
       >
         Get Started!

@@ -1,82 +1,76 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import FrontPage from './initiallogin/FrontPage';
-import Screen from './main-app/Screen';
-import React, {useState, useEffect} from 'react';
-import logo from "./HelloWorldLogo.svg";
-import "./App.css";
 import io from 'socket.io-client';
-import GoogleMap from "./components/GoogleMap";
-import GoogleMapReact from "google-map-react";
-import {defaultStartCoords, fakeUsers} from "./util/fakeUsers";
+import GoogleMap from './components/GoogleMap';
+import NameHolder from './component/nameholder/NameHolder';
+import LoginModal from './loginmodal/LoginModal';
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = 'http://localhost:5000';
+export const StateContext = React.createContext({});
 
 function App() {
-  const socket = io("http://localhost:5000", {
+  const socket = io('http://localhost:5000', {
     withCredentials: true,
     extraHeaders: {
-      "my-custom-header": "abcd",
+      'my-custom-header': 'abcd',
     },
   });
 
-  socket.on("connect", (message) => {
-    console.log("A new user has connected");
+  socket.on('connect', (message) => {
+    console.log('A new user has connected');
   });
 
-  socket.on("status", (msg) => {
+  socket.on('status', (msg) => {
     console.log(msg);
   });
 
-  socket.emit("inputUser", {
-    username: "test",
-    lat: "0000",
-    long: "20000",
+  socket.emit('inputUser', {
+    username: 'test',
+    lat: '0000',
+    long: '20000',
   });
 
-  socket.on("outputUser", (users) =>
-    users.map((user) => console.log("user " + user.username + " joined"))
+  socket.on('outputUser', (users) =>
+    users.map((user) => console.log('user ' + user.username + ' joined'))
   );
 
-  socket.emit("inputMessage", {
-    username: "Dhafin",
-    text: "Hello to you too!",
+  socket.emit('inputMessage', {
+    username: 'Dhafin',
+    text: 'Hello to you too!',
   });
 
-  socket.emit("inputPosition", {
-    username: "test",
-    lat: "1200",
-    long: "3000",
+  socket.emit('inputPosition', {
+    username: 'test',
+    lat: '1200',
+    long: '3000',
   });
 
-  socket.on("outputPosition", (users) => {
+  socket.on('outputPosition', (users) => {
     users.map((user) =>
-      console.log(
-        "user " + user.username + " moved to " + user.long + " " + user.lat
-      )
+      console.log('user ' + user.username + ' moved to ' + user.long + ' ' + user.lat)
     );
   });
 
-  socket.on("outputMessage", (messages) => {
+  socket.on('outputMessage', (messages) => {
     messages.map((message) => console.log(message.text));
   });
 
-  socket.on("userLeft", (userId) => console.log("user " + userId + " left"));
+  socket.on('userLeft', (userId) => console.log('user ' + userId + ' left'));
 
+  const currLocation = { lat: 1.3521, lng: 103.8198 };
 
-    const currLocation = {lat: 1.3521, lng: 103.8198}
-    const [coordinates, setCoordinates] = useState(currLocation);
-
-    return (
-        <div className="App">
-            <GoogleMap center={coordinates} zoom={15}/>
-            <button className={"recenter-button"} onClick={() => {
-                console.log("CLICKED");
-                setCoordinates(currLocation)
-            }}>RE-CENTER</button>
-        </div>
-    );
+  // Global variables
+  const [coordinates, setCoordinates] = useState(currLocation);
   const [initialScreen, setScreen] = useState(true);
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+
+  const contextProviderValue = {
+    name,
+    setName,
+    image,
+    setImage,
+  };
 
   useEffect(() => {
     const isInitialized = window.localStorage.getItem('initialized');
@@ -87,8 +81,20 @@ function App() {
 
   return (
     <div className="App">
-      {initialScreen && <FrontPage setScreen={() => setScreen(false)} />}
-      {!initialScreen && <Screen />}
+      <StateContext.Provider value={contextProviderValue}>
+        <NameHolder />
+        {!initialScreen && <LoginModal />}
+        <GoogleMap center={coordinates} zoom={15} />
+        <button
+          className={'recenter-button'}
+          onClick={() => {
+            console.log('CLICKED');
+            setCoordinates(currLocation);
+          }}
+        >
+          RE-CENTER
+        </button>
+      </StateContext.Provider>
     </div>
   );
 }

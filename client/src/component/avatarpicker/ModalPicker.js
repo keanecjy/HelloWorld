@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import './styles.css';
 import '../picturecontainer/styles.css';
 import ListOfImages from '../picturecontainer/ListOfImages';
 import { listOfImages } from '../picturecontainer/imagesList';
-import { StateContext } from "../../main-app/Screen";
+import { StateContext } from '../../App';
 
 const ModalPicker = () => {
+  const { image, setImage } = useContext(StateContext);
 
-  const {image, setImage} = useContext(StateContext);
-  
   const [isPickAvatar, showAvatarPicker] = useState(false);
 
   const handleSelection = (pic) => {
