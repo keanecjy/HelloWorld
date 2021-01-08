@@ -99,6 +99,7 @@ function App() {
           RE-CENTER
         </button>
       </StateContext.Provider>
+      {/*<p className="app-name">HELLO WORLD!</p>*/}
     </div>
   );
 }

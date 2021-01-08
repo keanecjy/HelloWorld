@@ -31,7 +31,7 @@ const NameHolder = () => {
           src={image ? listOfImages[image] : listOfImages['boy1']}
           alt="none"
           className="image-style"
-          style={{ width: `60px` }}
+          style={{ width: `50px` }}
           onClick={() => showAvatarPicker(true)}
         />
         <input

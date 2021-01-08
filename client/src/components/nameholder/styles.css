@@ -6,10 +6,10 @@
   left: 20px;
   max-width: 100%;
   min-width: 10%;
-  padding: 10px 0 10px 30px;
+  padding: 10px 0 10px 20px;
   position: fixed;
   top: 40px;
-  width: 300px;
+  width: 250px;
   z-index: 1000;
 }
 
@@ -17,8 +17,7 @@
   border: 1px solid transparent;
   font-weight: bold;
   outline: none;
-  padding-left: 10px;
-  width: 60%;
+  width: 50%;
 }
 
 .appear-on-left {
