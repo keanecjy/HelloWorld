@@ -1,0 +1,52 @@
+{
+  "name": "helloworld",
+  "version": "0.0.1",
+  "description": "HelloWorld is an application designed to connect users throughout the world with an interactive map display",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NUS-DFG/Raven.git"
+  },
+  "keywords": [
+    "HelloWorld",
+    "chat",
+    "maps",
+    "connect",
+    "global"
+  ],
+  "contributors": [
+    "Francis Hodianto",
+    "Dhafin Razaq Oktoyuzan",
+    "Lim Jin Hao",
+    "Keane Chan Jun Yu"
+  ],
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/NUS-DFG/Raven/issues"
+  },
+  "homepage": "https://github.com/NUS-DFG/Raven#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "concurrently": "^5.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-query-parser": "^1.1.0",
+    "helmet": "^4.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.7",
+    "ramda": "^0.27.1",
+    "socket.io": "^3.0.5"
+  }
+}
