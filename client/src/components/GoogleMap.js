@@ -3,8 +3,8 @@ import GoogleMapReact from 'google-map-react';
 import supercluster from 'points-cluster';
 
 import './GoogleMap.css';
-import UserPin from './mapobject/UserPin';
-import Cluster from './mapobject/Cluster';
+import UserPin from './MapObject/UserPin';
+import Cluster from './MapObject/Cluster';
 import { StateContext } from '../App';
 
 function createMapOptions(maps) {

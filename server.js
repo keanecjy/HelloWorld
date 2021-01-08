@@ -82,7 +82,7 @@ io.on('connection', (socket) => {
   User.find({})
     .sort({ _id: 1 })
     .then((users) => {
-      console.log(users);
+      // console.log(users);
       socket.emit('outputUser', users);
       socket.emit('onlineUsers', users.length);
 
@@ -101,6 +101,7 @@ io.on('connection', (socket) => {
   };
 
   socket.on('inputUser', (data) => {
+    console.log("socket id is " + socket.id)
     const newUser = new User({
       _id: socket.id,
       username: data.username,
@@ -120,12 +121,16 @@ io.on('connection', (socket) => {
   });
 
   socket.on('inputMessage', (data) => {
+    console.log('got msg of ' + data.text);
     if (isEmpty(data.text)) {
       setStatus('Please enter text');
     } else {
       User.findOne({ _id: socket.id })
         .then((user) => {
+          console.log('finding user');
+          console.log("User message id: " + socket.id);
           if (user) {
+            console.log('found user');
             const newMessage = new Message({
               username: user.username,
               text: data.text,
