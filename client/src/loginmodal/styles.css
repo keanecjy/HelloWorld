@@ -19,8 +19,8 @@
   border: none;
   border-bottom: 1px solid black;
   font-weight: 600;
-  margin-bottom: 42px;
-  margin-top: 20px;
+  margin-bottom: 30px;
+  margin-top: 6px;
   text-align: center;
   width: 100%;
 }
@@ -39,10 +39,8 @@
 .row-container {
   align-items: center;
   align-self: center;
-  display: flex;
-  justify-content: space-between;
-  justify-self: center;
-  width: 90%;
+  justify-content: center;
+  width: 100%;
 }
 
 .row-container > p {

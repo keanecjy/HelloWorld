@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from "react";
 import { Modal, Form } from 'react-bootstrap';
 import './styles.css';
-import AvatarPicker from '../component/avatarpicker/AvatarPicker';
+import ListOfImages from "../component/picturecontainer/ListOfImages";
+import { StateContext } from "../main-app/Screen";
 
 const LoginModal = () => {
+
+  const { name, image, setName, setImage } = useContext(StateContext);
   const [show, setShow] = useState(true);
-  const [name, setName] = useState('');
 
   const handleSubmit = (event) => {
     setShow(false);
     event.preventDefault();
+
+    // Name set
     window.localStorage.setItem('name', name);
+    const newUser = {
+      userName: name,
+      avatar: image,
+    }
+    socket.emit("inputUser", newUser);
   };
 
-  const handleChange = (val) => setName(val);
+  const handleChange = (event) => setName(event.target.value);
 
   return (
     <Modal
@@ -39,7 +48,7 @@ const LoginModal = () => {
         />
         <div className="row-container">
           <p>Pick your avatar</p>
-          <AvatarPicker />
+          <ListOfImages currentSelected={image} handleSelection={setImage} />
         </div>
         <Modal.Footer id="modal-footer">
           <button type="submit">Get chatting!</button>
