@@ -3,8 +3,8 @@ import GoogleMapReact from 'google-map-react';
 import supercluster from 'points-cluster';
 
 import './GoogleMap.css';
-import UserPin from './MapObject/UserPin';
-import Cluster from './MapObject/Cluster';
+import UserPin from './mapobject/UserPin';
+import Cluster from './mapobject/Cluster';
 import { StateContext } from '../App';
 
 function createMapOptions(maps) {
@@ -28,13 +28,12 @@ function GoogleMap({ users }) {
         radius: 60,
       });
 
-      console.log(mapOptions);
       setClusters(
         clusters(mapOptions).map(({ wx, wy, numPoints, points }) => ({
           lat: wy,
           lng: wx,
           numPoints: numPoints,
-          id: `${numPoints}_${points[0].id}`,
+          id: `${numPoints}_${points[0]._id}`,
           points: points,
         }))
       );
@@ -58,8 +57,9 @@ function GoogleMap({ users }) {
                 <UserPin
                   lat={groups.points[0].lat}
                   lng={groups.points[0].lng}
-                  details={groups.points[0].details}
-                  key={groups.id}
+                  username={groups.points[0].username}
+                  avatar={groups.points[0].avatar}
+                  key={groups.points[0]._id}
                 />
               );
             } else {

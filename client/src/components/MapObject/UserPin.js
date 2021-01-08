@@ -3,14 +3,13 @@ import './UserPin.css';
 import SpeechBubble from './SpeechBubble';
 import UserAvatar from "../UserAvatar";
 
-function UserPin({ details }) {
-  const { chatMessage, image, name } = details;
+function UserPin({ username, avatar }) {
   return (
     <div className={'user'}>
-      {chatMessage && <SpeechBubble>{chatMessage}</SpeechBubble>}
+      {/*{chatMessage && <SpeechBubble>{chatMessage}</SpeechBubble>}*/}
       <div>
         <UserAvatar
-          imgName={image}
+          avatar={avatar}
           style={{
             width: "48px",
             height: "48px",
@@ -23,7 +22,7 @@ function UserPin({ details }) {
           // handleClick={() => handleSelection(key)}
         />
       </div>
-      <p className={'user-name'}>{name || 'No Name'}</p>
+      <p className={'user-name'}>{username || 'No Name'}</p>
     </div>
   );
 }
