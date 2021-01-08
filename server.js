@@ -102,6 +102,7 @@ io.on("connection", (socket) => {
   socket.on("inputUser", (data) => {
     const newUser = new User({
       _id: socket.id,
+      username: data.username,
       avatar: data.avatar,
       lat: data.lat,
       long: data.long,
@@ -119,21 +120,24 @@ io.on("connection", (socket) => {
     if (isEmpty(data.text)) {
       setStatus("Please enter name and text");
     } else {
-      User.findOne({ _id: socket.id }).then((user) => {
-        const newMessage = new Message({
-          username: user.username,
-          text: data.text,
-        });
-  
-        newMessage
-          .save()
-          .then((message) => {
-            io.emit("outputMessage", [message]);
-          })
-          .catch((err) => {
-            console.log(err);
+      User.findOne({ _id: socket.id })
+        .then((user) => {
+          console.log(user);
+          const newMessage = new Message({
+            username: user.username,
+            text: data.text,
           });
-      });
+
+          newMessage
+            .save()
+            .then((message) => {
+              io.emit("outputMessage", [message]);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => console.log(err));
     }
   });
 
@@ -144,9 +148,7 @@ io.on("connection", (socket) => {
       User.findOne({ _id: socket.id })
         .then((userToUpdate) => {
           if (!userToUpdate) {
-            console.log(
-              `User with ID ${socket.id} does not exist in database`
-            );
+            console.log(`User with ID ${socket.id} does not exist in database`);
           } else {
             userToUpdate.long = data.long;
             userToUpdate.lat = data.lat;
@@ -184,6 +186,19 @@ mongoose
 
 // Uses process.env.PORT if available otherwise 5000
 const port = process.env.PORT || 5000;
+
+const cleanDatabase = async () => {
+  await mongoose.connection.db.dropDatabase();
+};
+
+// listen for TERM signal .e.g. kill
+process.on("SIGTERM", () => cleanDatabase());
+
+// listen for INT signal e.g. Ctrl-C
+process.on("SIGINT", () => cleanDatabase());
+
+// or even exit event
+process.on("exit", () => cleanDatabase());
 
 // Tells the server which port to listen on
 server.listen(port, () =>
