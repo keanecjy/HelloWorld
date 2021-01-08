@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
     .sort({ _id: 1 })
     .then((users) => {
       socket.emit("outputUser", users);
-      io.emit("onlineUsers", users.length);
+      socket.emit("onlineUsers", users.length);
 
       Message.find({})
         .limit(100)
@@ -112,6 +112,9 @@ io.on("connection", (socket) => {
       .save()
       .then((user) => {
         io.emit("outputUser", [user]);
+        User.find({}).then((users) => {
+          io.emit("onlineUsers", users.length);
+        });
       })
       .catch((err) => console.log(err));
   });
@@ -189,6 +192,7 @@ const port = process.env.PORT || 5000;
 
 const cleanDatabase = async () => {
   await mongoose.connection.db.dropDatabase();
+  server.close();
 };
 
 // listen for TERM signal .e.g. kill

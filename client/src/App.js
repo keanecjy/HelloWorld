@@ -53,6 +53,10 @@ function App() {
       );
     });
 
+    socket.on("onlineUsers", (number) => {
+      console.log("users: " + number);
+    });
+
     socket.on("outputMessage", (messages) => {
       messages.map((message) => console.log(message.text));
     });
