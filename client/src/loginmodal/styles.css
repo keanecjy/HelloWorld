@@ -1,0 +1,52 @@
+.modal-content {
+  align-items: center;
+  border-radius: 40px;
+  text-align: center;
+}
+
+.modal-styles {
+  padding: 0 120px;
+}
+
+#modal-header {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-top: 16px;
+}
+
+.name-box {
+  align-self: center;
+  border: none;
+  border-bottom: 1px solid black;
+  font-weight: 600;
+  margin-bottom: 42px;
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.modal-footer {
+  border-top: none;
+  justify-content: center;
+  margin-bottom: 6px;
+  margin-top: 20px;
+}
+
+.modal-footer button {
+  font-weight: 600;
+}
+
+.row-container {
+  align-items: center;
+  align-self: center;
+  display: flex;
+  justify-content: space-between;
+  justify-self: center;
+  width: 90%;
+}
+
+.row-container > p {
+  font-size: 1.1em;
+  font-weight: bold;
+  transform: translateY(8px);
+}
