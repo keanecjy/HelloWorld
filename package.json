@@ -35,7 +35,7 @@
   "homepage": "https://github.com/HelloWorldHnR/HelloWorld#readme",
   "devDependencies": {
     "nodemon": "^2.0.6",
-    "prettier": "^2.2.1"
+    "prettier": "2.2.1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

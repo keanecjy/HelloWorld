@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import logo from './HelloWorldLogo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import io from 'socket.io-client';
 import GoogleMap from './components/GoogleMap';
-import GoogleMapReact from 'google-map-react';
-import { defaultStartCoords, fakeUsers } from './util/fakeUsers';
+import NameHolder from './components/nameholder/NameHolder';
+import LoginModal from './loginmodal/LoginModal';
 
 const SERVER_URL = 'http://localhost:5000';
+export const StateContext = React.createContext({});
 
 function App() {
   useEffect(() => {
@@ -60,23 +60,46 @@ function App() {
     });
 
     socket.on('userLeft', (userId) => console.log('user ' + userId + ' left'));
+
+    const isInitialized = window.localStorage.getItem('initialized');
+    if (isInitialized) {
+      setScreen(false);
+    }
   }, []);
 
+  // Coordinates
   const currLocation = { lat: 1.3521, lng: 103.8198 };
   const [coordinates, setCoordinates] = useState(currLocation);
 
+  // Global variables
+  const [initialScreen, setScreen] = useState(true);
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+
+  const contextProviderValue = {
+    name,
+    setName,
+    image,
+    setImage,
+  };
+
   return (
     <div className="App">
-      <GoogleMap center={coordinates} zoom={15} />
-      <button
-        className={'recenter-button'}
-        onClick={() => {
-          console.log('CLICKED');
-          setCoordinates(currLocation);
-        }}
-      >
-        RE-CENTER
-      </button>
+      <StateContext.Provider value={contextProviderValue}>
+        {initialScreen && <LoginModal />}
+        <NameHolder />
+        <GoogleMap center={coordinates} zoom={15} />
+        <button
+          className="recenter-button"
+          onClick={() => {
+            console.log('CLICKED');
+            setCoordinates(currLocation);
+          }}
+        >
+          RE-CENTER
+        </button>
+      </StateContext.Provider>
+      {/*<p className="app-name">HELLO WORLD!</p>*/}
     </div>
   );
 }
