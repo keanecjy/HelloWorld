@@ -1,33 +1,30 @@
-import logo from "./HelloWorldLogo.svg";
-import "./App.css";
-import { io } from "socket.io-client";
-const SERVER_URL = "http://localhost:5000";
+import React, {useState} from "react";
+import './App.css';
+import { io } from 'socket.io-client';
+import FrontPage from './initiallogin/FrontPage';
+import Screen from "./main-app/Screen";
+
+const SERVER_URL = 'http://localhost:5000';
 
 function App() {
   // Socket.io connections between client and server
   const socket = io(SERVER_URL, {
     withCredentials: true,
     extraHeaders: {
-      "my-custom-header": "abcd",
+      'my-custom-header': 'abcd',
     },
   });
 
-  socket.on("connected", (message) => {
+  socket.on('connected', (message) => {
     console.log(message);
   });
 
+  const [initialScreen, setScreen] = useState(true);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <br />
-        <p>
-          <strong> Welcome to HelloWorld </strong>
-        </p>
-        <p>
-          <strong> The world's most engaging map </strong>
-        </p>
-      </header>
+      {initialScreen && <FrontPage setScreen={() => setScreen(false)} /> }
+      {!initialScreen && <Screen /> }
     </div>
   );
 }
