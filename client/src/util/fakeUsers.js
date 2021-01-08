@@ -1,3 +1,5 @@
+import { avatarList } from "../components/images";
+
 const TOTAL_USERS_COUNT = 200;
 
 export const defaultStartCoords = { lat: 1.3521, lng: 103.8198 };
@@ -14,8 +16,8 @@ export const fakeUsers = [...Array(TOTAL_USERS_COUNT)].fill(0).map((val, index) 
     Math.sin(index / 180),
   details: {
     chatMessage: 'HI',
-    // random color
-    iconColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+    // random avatar
+    image: avatarList[avatarList.length * Math.random() << 0],
     name: 'User' + index.toString(10),
   },
 }));

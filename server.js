@@ -82,6 +82,7 @@ io.on('connection', (socket) => {
   User.find({})
     .sort({ _id: 1 })
     .then((users) => {
+      console.log(users);
       socket.emit('outputUser', users);
       socket.emit('onlineUsers', users.length);
 

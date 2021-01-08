@@ -7,11 +7,19 @@ import { fakeUsers } from './util/fakeUsers';
 import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
 import GoogleMap from './components/GoogleMap';
+import ChatBox from './components/chatbox/ChatBox';
 
 const SERVER_URL = 'http://localhost:5000';
 export const StateContext = React.createContext({});
 
 const SG_POSITION = { lat: 1.3521, lng: 103.8198 };
+
+const socket = io(SERVER_URL, {
+  withCredentials: true,
+  extraHeaders: {
+    'my-custom-header': 'abcd',
+  },
+});
 
 function App() {
   // Global Variables
@@ -30,13 +38,6 @@ function App() {
   const [currLocation, setCurrLocation] = useState(SG_POSITION);
 
   useEffect(() => {
-    const socket = io(SERVER_URL, {
-      withCredentials: true,
-      extraHeaders: {
-        'my-custom-header': 'abcd',
-      },
-    });
-
     socket.on('connect', (message) => {
       console.log('A new user has connected');
     });
@@ -47,7 +48,7 @@ function App() {
 
     socket.on('outputUser', (allUsers) => {
       allUsers.map((user) => console.log('user ' + user.username + ' joined'));
-      setUsers({ ...users, allUsers });
+      setUsers([...users, ...allUsers]);
     });
 
     socket.on('outputPosition', (newUsers) => {
@@ -138,6 +139,7 @@ function App() {
     setImage,
     mapOptions,
     setMapOptions,
+    sendMessage: (text) => socket.emit('inputMessage', { text: text }),
     setIsUserInputted,
   };
 
@@ -153,6 +155,7 @@ function App() {
         >
           RE-CENTER
         </button>
+        <ChatBox />
       </StateContext.Provider>
       {/*<p className="app-name">HELLO WORLD!</p>*/}
     </div>
