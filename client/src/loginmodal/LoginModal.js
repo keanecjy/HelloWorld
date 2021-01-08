@@ -24,7 +24,7 @@ const LoginModal = () => {
     // Name set
     window.localStorage.setItem('name', name);
     const newUser = {
-      userName: name,
+      username: name,
       avatar: image,
     };
     socket.emit('inputUser', newUser);
