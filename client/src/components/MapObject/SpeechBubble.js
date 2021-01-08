@@ -1,12 +1,8 @@
-import React from "react";
-import "./SpeechBubble.css";
+import React from 'react';
+import './SpeechBubble.css';
 
-function SpeechBubble({children}) {
-    return (
-        <div className={"speech-bubble"}>
-            {children}
-        </div>
-    )
+function SpeechBubble({ children }) {
+  return <div className={'speech-bubble'}>{children}</div>;
 }
 
-export default SpeechBubble
+export default SpeechBubble;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // create User schema
@@ -13,4 +13,4 @@ const MessageSchema = new Schema({
 });
 
 // Exports the model using the specified Schema
-module.exports = mongoose.model("messages", MessageSchema);
+module.exports = mongoose.model('messages', MessageSchema);

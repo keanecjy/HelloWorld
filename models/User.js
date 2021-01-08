@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // create User schema
@@ -24,4 +24,4 @@ const UserSchema = new Schema({
 });
 
 // Exports the model using the specified Schema
-module.exports = mongoose.model("users", UserSchema);
+module.exports = mongoose.model('users', UserSchema);
