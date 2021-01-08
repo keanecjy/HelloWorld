@@ -24,10 +24,13 @@ const LoginModal = () => {
     // Name set
     window.localStorage.setItem('name', name);
     const newUser = {
-      userName: name,
+      username: name,
       avatar: image,
     };
     socket.emit('inputUser', newUser);
+    socket.on('outputUser', (users) =>
+      users.map((user) => console.log('user ' + user.username + ' joined'))
+    );
   };
 
   const handleChange = (event) => setName(event.target.value);

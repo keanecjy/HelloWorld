@@ -105,9 +105,8 @@ io.on('connection', (socket) => {
       username: data.username,
       avatar: data.avatar,
       lat: data.lat,
-      long: data.long,
+      lng: data.lng,
     });
-
     newUser
       .save()
       .then((user) => {
@@ -145,15 +144,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on('inputPosition', (data) => {
-    if (isEmpty(data.long) || isEmpty(data.lat)) {
-      setStatus('No username, long, or lan included');
+    if (!data.lng || !data.lat) {
+      setStatus('No lng or lat included', data);
     } else {
       User.findOne({ _id: socket.id })
         .then((userToUpdate) => {
           if (!userToUpdate) {
             console.log(`User with ID ${socket.id} does not exist in database`);
           } else {
-            userToUpdate.long = data.long;
+            userToUpdate.lng = data.lng;
             userToUpdate.lat = data.lat;
             userToUpdate
               .save()
@@ -165,6 +164,26 @@ io.on('connection', (socket) => {
         })
         .catch((err) => console.log(err));
     }
+  });
+
+  socket.on('inputUpdateUser', (updatedData) => {
+    User.findOne({ _id: socket.id })
+      .then((userToUpdate) => {
+        userToUpdate.username = isEmpty(updatedData.username)
+          ? userToUpdate.username
+          : updatedData.username;
+        userToUpdate.avatar = isEmpty(updatedData.avatar)
+          ? userToUpdate.avatar
+          : updatedData.avatar;
+        userToUpdate.lat = isEmpty(updatedData.lat) ? userToUpdate.lat : updatedData.lat;
+        userToUpdate.lng = isEmpty(updatedData.lng) ? userToUpdate.lng : updatedData.lng;
+
+        userToUpdate.save().then((updatedUser) => {
+          io.emit('outputUpdateUser', [updatedUser]);
+        })
+        .catch(err => console.log(err));
+      })
+      .catch((err) => console.log(err));
   });
 
   socket.on('disconnect', () => {
