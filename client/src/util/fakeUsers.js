@@ -5,7 +5,7 @@ export const defaultStartCoords = {lat: 1.3521, lng: 103.8198};
 export const fakeUsers = [...Array(TOTAL_USERS_COUNT)]
     .fill(0)
     .map((val, index) => ({
-        id: index,
+        id: "mock" + index,
         lat: defaultStartCoords.lat +
             0.2 *
             index *

@@ -18,7 +18,7 @@ const UserSchema = new Schema({
   lat: {
     type: String,
   },
-  long: {
+  lng: {
     type: String,
   },
 });
