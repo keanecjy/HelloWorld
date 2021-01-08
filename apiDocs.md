@@ -12,7 +12,7 @@ Params to be received: String
 
 Backend will emit this as a reply for inputUser.
 
-Params to be received: [{_id, username, lat, long}]
+Params to be received: [{_id, username, avatar, lat, long}]
 
 Frontend can iterate over the users by using map as it is an array of objects. Example:
 
@@ -52,14 +52,14 @@ Automatically called when a user is initially connected (Done by socket.io)
 
 ### inputUser
 
-Emitted by frontend to backend when the user entered a username.
+Emitted by frontend to backend when the user entered a username and chose an avatar.
 
-Params to be sent: {username, lat, long}
+Params to be sent: {username, avatar, lat, long}
 
 Example:
 
 ```
-const newUser = {username: "john", lat: "3000", long: "40000"}
+const newUser = {username: "john", avatar: "male1", lat: "3000", long: "40000"}
 socket.emit("inputUser", newUser);
 ```
 
@@ -67,10 +67,10 @@ socket.emit("inputUser", newUser);
 
 Emitted by frontend to backend when a user sent a message.
 
-Params to be sent: {username, text}
+Params to be sent: {text}
 
 ### inputPosition
 
 Emitted by frontend to backend when a user moves to another location (For example, you might want to emit this event every 5 seconds)
 
-Params to be sent: {username, lat, long}
+Params to be sent: {lat, long}

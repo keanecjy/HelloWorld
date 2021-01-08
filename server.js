@@ -83,13 +83,13 @@ io.on("connection", (socket) => {
     .sort({ _id: 1 })
     .then((users) => {
       socket.emit("outputUser", users);
+      io.emit("onlineUsers", users.length);
 
       Message.find({})
         .limit(100)
         .sort({ _id: 1 })
         .then((messages) => {
           socket.emit("outputMessage", messages);
-          socket.emit("connected", null);
         })
         .catch((err) => console.log(err));
     })
@@ -102,7 +102,7 @@ io.on("connection", (socket) => {
   socket.on("inputUser", (data) => {
     const newUser = new User({
       _id: socket.id,
-      username: data.username,
+      avatar: data.avatar,
       lat: data.lat,
       long: data.long,
     });
@@ -116,34 +116,36 @@ io.on("connection", (socket) => {
   });
 
   socket.on("inputMessage", (data) => {
-    if (isEmpty(data.username) || isEmpty(data.text)) {
+    if (isEmpty(data.text)) {
       setStatus("Please enter name and text");
     } else {
-      const newMessage = new Message({
-        username: data.username,
-        text: data.text,
-      });
-
-      newMessage
-        .save()
-        .then((message) => {
-          io.emit("outputMessage", [message]);
-        })
-        .catch((err) => {
-          console.log(err);
+      User.findOne({ _id: socket.id }).then((user) => {
+        const newMessage = new Message({
+          username: user.username,
+          text: data.text,
         });
+  
+        newMessage
+          .save()
+          .then((message) => {
+            io.emit("outputMessage", [message]);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
     }
   });
 
   socket.on("inputPosition", (data) => {
-    if (isEmpty(data.username) || isEmpty(data.long) || isEmpty(data.lat)) {
+    if (isEmpty(data.long) || isEmpty(data.lat)) {
       setStatus("No username, long, or lan included");
     } else {
       User.findOne({ _id: socket.id })
         .then((userToUpdate) => {
           if (!userToUpdate) {
             console.log(
-              `User with username ${data.username} does not exist in database`
+              `User with ID ${socket.id} does not exist in database`
             );
           } else {
             userToUpdate.long = data.long;
@@ -164,6 +166,9 @@ io.on("connection", (socket) => {
     User.findOneAndDelete({ _id: socket.id })
       .then(() => {
         socket.broadcast.emit("userLeft", socket.id);
+        User.count({}, (err, count) => {
+          socket.broadcast.emit("onlineUsers", count);
+        });
       })
       .catch((err) => console.log(err));
   });
