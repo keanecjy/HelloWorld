@@ -5,3 +5,9 @@
 .App-link {
   color: #61dafb;
 }
+
+.recenter-button {
+  bottom: 30px;
+  left: 10px;
+  position: fixed;
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import io from 'socket.io-client';
 import GoogleMap from './components/GoogleMap';
-import NameHolder from './component/nameholder/NameHolder';
+import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
 
 const SERVER_URL = 'http://localhost:5000';
@@ -82,11 +82,11 @@ function App() {
   return (
     <div className="App">
       <StateContext.Provider value={contextProviderValue}>
+        {initialScreen && <LoginModal />}
         <NameHolder />
-        {!initialScreen && <LoginModal />}
         <GoogleMap center={coordinates} zoom={15} />
         <button
-          className={'recenter-button'}
+          className="recenter-button"
           onClick={() => {
             console.log('CLICKED');
             setCoordinates(currLocation);

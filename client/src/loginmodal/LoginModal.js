@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import './styles.css';
-import ListOfImages from '../component/picturecontainer/ListOfImages';
+import ListOfImages from '../components/picturecontainer/ListOfImages';
 import { StateContext } from '../App';
 import io from 'socket.io-client';
 
@@ -19,6 +19,7 @@ const LoginModal = () => {
   const handleSubmit = (event) => {
     setShow(false);
     event.preventDefault();
+    // Set initialized field to prevent modal from showing up again
     window.localStorage.setItem('initialized', 'yes');
     // Name set
     window.localStorage.setItem('name', name);

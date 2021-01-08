@@ -1,0 +1,29 @@
+.row-flex {
+  background-color: white;
+  border-radius: 40px;
+  display: flex;
+  gap: 10px;
+  left: 20px;
+  max-width: 100%;
+  min-width: 10%;
+  padding: 10px 0 10px 30px;
+  position: fixed;
+  top: 40px;
+  width: 300px;
+  z-index: 1000;
+}
+
+.input-name {
+  border: 1px solid transparent;
+  font-weight: bold;
+  outline: none;
+  padding-left: 10px;
+  width: 60%;
+}
+
+.appear-on-left {
+  left: 20px;
+  position: fixed;
+  top: 100px;
+  width: fit-content;
+}

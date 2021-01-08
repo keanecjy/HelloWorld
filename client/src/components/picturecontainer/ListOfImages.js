@@ -1,8 +1,7 @@
-import React  from "react";
+import React from 'react';
 import { listOfImages } from './imagesList';
 
 const ListOfImages = ({ currentSelected, handleSelection }) => {
-
   return (
     <div className="grid-container">
       {Object.entries(listOfImages).map(([key, value]) => (
@@ -12,7 +11,7 @@ const ListOfImages = ({ currentSelected, handleSelection }) => {
           alt="none"
           className="image-style"
           style={{
-            boxShadow : currentSelected === key && '0 0 0 1pt #163CC5',
+            boxShadow: currentSelected === key && '0 0 0 1pt #163CC5',
           }}
           onClick={() => handleSelection(key)}
         />
