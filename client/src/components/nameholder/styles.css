@@ -16,8 +16,13 @@
 .input-name {
   border: 1px solid transparent;
   font-weight: bold;
+  color: inherit;
   outline: none;
   width: 50%;
+}
+
+.input-name::placeholder {
+  color: inherit;
 }
 
 .appear-on-left {

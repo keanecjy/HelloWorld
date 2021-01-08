@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-
 import './App.css';
-import logo from './HelloWorldLogo.svg';
 import { fakeUsers } from './util/fakeUsers';
 import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
+import ChatBox from './components/chatbox/ChatBox';
 import GoogleMap from './components/GoogleMap';
 
 const SERVER_URL = 'http://localhost:5000';
@@ -15,9 +14,8 @@ const SG_POSITION = { lat: 1.3521, lng: 103.8198 };
 
 function App() {
   // Global Variables
-  const [initialScreen, setScreen] = useState(true);
   const [name, setName] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState('boy1');
   const [mapOptions, setMapOptions] = useState(null);
 
   const [users, setUsers] = useState(fakeUsers);
@@ -119,10 +117,6 @@ function App() {
       text: "Hello everybody, I'm " + name,
     });
 
-    const isInitialized = window.localStorage.getItem('initialized');
-    if (isInitialized) {
-      setScreen(false);
-    }
   }, []);
 
   const contextProviderValue = {
@@ -132,20 +126,24 @@ function App() {
     setImage,
     mapOptions,
     setMapOptions,
+    currLocation,
   };
 
   return (
     <div className="App">
       <StateContext.Provider value={contextProviderValue}>
-        {initialScreen && <LoginModal />}
+        <LoginModal />
         <NameHolder />
         <GoogleMap users={users} />
         <button
-          className={'recenter-button'}
-          onClick={() => setMapOptions({ center: currLocation, zoom: 15 })}
+          className="recenter-button"
+          onClick={() => {
+            setCurrLocation(currLocation);
+          }}
         >
           RE-CENTER
         </button>
+        <ChatBox />
       </StateContext.Provider>
       {/*<p className="app-name">HELLO WORLD!</p>*/}
     </div>

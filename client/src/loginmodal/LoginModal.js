@@ -13,19 +13,16 @@ const LoginModal = () => {
     },
   });
 
-  const { name, image, setName, setImage } = useContext(StateContext);
+  const { name, image, setName, setImage, currLocation } = useContext(StateContext);
   const [show, setShow] = useState(true);
 
   const handleSubmit = (event) => {
     setShow(false);
     event.preventDefault();
-    // Set initialized field to prevent modal from showing up again
-    window.localStorage.setItem('initialized', 'yes');
-    // Name set
-    window.localStorage.setItem('name', name);
     const newUser = {
       username: name,
       avatar: image,
+      ...currLocation,
     };
     socket.emit('inputUser', newUser);
     socket.on('outputUser', (users) =>
