@@ -40,4 +40,18 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Socket.io connections between client and server
+    const socket = io("http://localhost:5000", {
+      withCredentials: true,
+      extraHeaders: {
+        "my-custom-header": "abcd",
+      },
+    });
+
+    socket.on("connected", (message) => {
+      console.log(message);
+    });
+  </script>
 </html>
