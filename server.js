@@ -103,6 +103,7 @@ io.on("connection", (socket) => {
     const newUser = new User({
       _id: socket.id,
       username: data.username,
+      avatar: data.avatar,
       lat: data.lat,
       long: data.long,
     });
