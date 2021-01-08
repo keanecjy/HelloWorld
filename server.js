@@ -107,7 +107,6 @@ io.on('connection', (socket) => {
       lat: data.lat,
       long: data.long,
     });
-
     newUser
       .save()
       .then((user) => {
