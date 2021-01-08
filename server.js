@@ -107,7 +107,6 @@ io.on('connection', (socket) => {
       lat: data.lat,
       long: data.long,
     });
-
     newUser
       .save()
       .then((user) => {
@@ -165,6 +164,26 @@ io.on('connection', (socket) => {
         })
         .catch((err) => console.log(err));
     }
+  });
+
+  socket.on('inputUpdateUser', (updatedData) => {
+    User.findOne({ _id: socket.id })
+      .then((userToUpdate) => {
+        userToUpdate.username = isEmpty(updatedData.username)
+          ? userToUpdate.username
+          : updatedData.username;
+        userToUpdate.avatar = isEmpty(updatedData.avatar)
+          ? userToUpdate.avatar
+          : updatedData.avatar;
+        userToUpdate.lat = isEmpty(updatedData.lat) ? userToUpdate.lat : updatedData.lat;
+        userToUpdate.lng = isEmpty(updatedData.lng) ? userToUpdate.lng : updatedData.lng;
+
+        userToUpdate.save().then((updatedUser) => {
+          io.emit('outputUpdateUser', [updatedUser]);
+        })
+        .catch(err => console.log(err));
+      })
+      .catch((err) => console.log(err));
   });
 
   socket.on('disconnect', () => {
