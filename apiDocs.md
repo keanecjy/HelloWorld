@@ -46,7 +46,7 @@ id is the id (String) of the user that left
 
 Emitted by backend to frontend (all users) when a user's data is changed (e.g. changing username/avatar).
 
-Params to be received: {\_id, username, avatar, lat, lng}.
+Params to be received: [{_id, username, avatar, lat, lng}].
 
 # socket.emit(eventToEmit, params to be sent)
 
