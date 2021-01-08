@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NUS-DFG/Raven.git"
+    "url": "git+https://github.com/HelloWorldHnR/HelloWorld.git"
   },
   "keywords": [
     "HelloWorld",
@@ -29,9 +29,9 @@
   ],
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/NUS-DFG/Raven/issues"
+    "url": "https://github.com/HelloWorldHnR/HelloWorld/issues"
   },
-  "homepage": "https://github.com/NUS-DFG/Raven#readme",
+  "homepage": "https://github.com/HelloWorldHnR/HelloWorld#readme",
   "devDependencies": {
     "nodemon": "^2.0.6"
   },
