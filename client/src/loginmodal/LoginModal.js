@@ -6,17 +6,8 @@ import { StateContext } from '../App';
 import io from 'socket.io-client';
 
 const LoginModal = () => {
-  let socket;
-  useEffect(() => {
-    socket = io('http://localhost:5000', {
-      withCredentials: true,
-      extraHeaders: {
-        'my-custom-header': 'abcd',
-      },
-    });
-  });
 
-  const { name, image, setName, setImage, setIsUserInputted } = useContext(StateContext);
+  const { name, image, setName, setImage, setIsUserInputted, sendUserInput } = useContext(StateContext);
   const [show, setShow] = useState(true);
 
   const handleSubmit = (event) => {
@@ -26,21 +17,11 @@ const LoginModal = () => {
     // window.localStorage.setItem('initialized', 'yes');
     // Name set
     // window.localStorage.setItem('name', name);
-    const newUser = {
-      username: name,
-      avatar: image,
-    };
-    socket.emit('inputUser', newUser);
+    sendUserInput(name, image);
 
     setIsUserInputted(true);
 
-    socket.on('outputUser', (users) =>
-      users.map((user) => console.log('user ' + user.username + ' joined'))
-    );
-
-    socket.emit('inputMessage', {
-      text: "Hello everybody, I'm " + name,
-    });
+    
   };
 
   const handleChange = (event) => setName(event.target.value);

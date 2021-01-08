@@ -140,6 +140,7 @@ function App() {
     mapOptions,
     setMapOptions,
     sendMessage: (text) => socket.emit('inputMessage', { text: text }),
+    sendUserInput: (name, image) => socket.emit('inputUser', { username: name, avatar: image }),
     setIsUserInputted,
   };
 
