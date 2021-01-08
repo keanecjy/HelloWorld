@@ -118,6 +118,11 @@ function App() {
     socket.emit('inputMessage', {
       text: "Hello everybody, I'm " + name,
     });
+
+    const isInitialized = window.localStorage.getItem('initialized');
+    if (isInitialized) {
+      setScreen(false);
+    }
   }, []);
 
   const contextProviderValue = {
