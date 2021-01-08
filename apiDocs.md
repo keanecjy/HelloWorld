@@ -32,7 +32,7 @@ Params to be received: [{username, text}]
 
 Emitted by backend to frontend (all users) as a reply for inputPosition.
 
-Params to be received: [{_id, username, lat, long}]
+Params to be received: [{_id, username, avatar, lat, long}]
 
 ### userLeft
 
@@ -41,6 +41,12 @@ Emitted by backend to frontend when someone disconnected.
 Params to be received: id
 
 id is the id (String) of the user that left
+
+### outputUpdateUser
+
+Emitted by backend to frontend (all users) when a user's data is changed (e.g. changing username/avatar).
+
+Params to be received: {\_id, username, avatar, lat, lng}.
 
 # socket.emit(eventToEmit, params to be sent)
 
@@ -74,3 +80,9 @@ Params to be sent: {text}
 Emitted by frontend to backend when a user moves to another location (For example, you might want to emit this event every 5 seconds)
 
 Params to be sent: {lat, long}
+
+### inputUpdateUser
+
+Emitted by frontend to backend when a user updates its data.
+
+Params to be sent: {username, avatar, lat, long}. All optional (no need to include all 4)
