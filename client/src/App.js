@@ -7,7 +7,7 @@ import { fakeUsers } from './util/fakeUsers';
 import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
 import GoogleMap from './components/GoogleMap';
-import ChatBox from "./components/chatbox/ChatBox";
+import ChatBox from './components/chatbox/ChatBox';
 
 const SERVER_URL = 'http://localhost:5000';
 export const StateContext = React.createContext({});
@@ -25,12 +25,14 @@ function App() {
   // Global Variables
   const [initialScreen, setScreen] = useState(true);
   const [name, setName] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState('boy1');
   const [mapOptions, setMapOptions] = useState(null);
 
   const [users, setUsers] = useState(fakeUsers);
   const [numOnline, setNumOnline] = useState(0);
   const [messages, setMessages] = useState([]);
+
+  const [isUserInputted, setIsUserInputted] = useState(false);
 
   // Map Coordinates
   const [currLocation, setCurrLocation] = useState(SG_POSITION);
@@ -46,7 +48,7 @@ function App() {
 
     socket.on('outputUser', (allUsers) => {
       allUsers.map((user) => console.log('user ' + user.username + ' joined'));
-      setUsers([ ...users, ...allUsers ]);
+      setUsers([...users, ...allUsers]);
     });
 
     socket.on('outputPosition', (newUsers) => {
@@ -63,7 +65,7 @@ function App() {
     });
 
     socket.on('userLeft', (userId) => {
-      console.log('user ' + userId + ' left');
+      console.log('user ' + userId + ' left' + ' called by ' + socket.id);
       setUsers([...users.filter((u) => u.id !== userId)]);
     });
 
@@ -84,46 +86,50 @@ function App() {
         setCurrLocation(location);
         setMapOptions({ center: location, zoom: 15 });
 
-        // add user
-        socket.emit('inputUser', {
-          username: name,
-          avatar: image,
-          ...location,
+        // console.log('user inputted');
+        // // add user
+        // socket.emit('inputUser', {
+        //   username: name,
+        //   avatar: image,
+        //   ...location,
+        // });
+      });
+
+      if (isUserInputted) {
+        navigator.geolocation.watchPosition((position) => {
+          console.log('geolocation changed');
+          if (
+            currLocation.lat !== position.coords.latitude ||
+            currLocation.lng !== position.coords.longitude
+          ) {
+            const location = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+
+            setCurrLocation(location);
+            console.log(location);
+            socket.emit('inputPosition', location);
+          }
         });
-      });
-
-      navigator.geolocation.watchPosition((position) => {
-        if (
-          currLocation.lat !== position.coords.latitude ||
-          currLocation.lng !== position.coords.longitude
-        ) {
-          const location = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-
-          setCurrLocation(location);
-          console.log(location);
-          socket.emit('inputPosition', location);
-        }
-      });
+      }
     } else {
       console.log('Location disabled');
-      socket.emit('inputUser', {
-        username: name,
-        avatar: image,
-        ...currLocation,
-      });
+      // socket.emit('inputUser', {
+      //   username: name,
+      //   avatar: image,
+      //   ...currLocation,
+      // });
     }
 
-    socket.emit('inputMessage', {
-      text: "Hello everybody, I'm " + name,
-    });
+    // socket.emit('inputMessage', {
+    //   text: "Hello everybody, I'm " + name,
+    // });
 
-    const isInitialized = window.localStorage.getItem('initialized');
-    if (isInitialized) {
-      setScreen(false);
-    }
+    // const isInitialized = window.localStorage.getItem('initialized');
+    // if (isInitialized) {
+    //   setScreen(false);
+    // }
   }, []);
 
   const contextProviderValue = {
@@ -133,7 +139,8 @@ function App() {
     setImage,
     mapOptions,
     setMapOptions,
-    sendMessage: (text) => socket.emit('inputMessage', { text: text })
+    sendMessage: (text) => socket.emit('inputMessage', { text: text }),
+    setIsUserInputted,
   };
 
   return (
@@ -148,7 +155,7 @@ function App() {
         >
           RE-CENTER
         </button>
-        <ChatBox/>
+        <ChatBox />
       </StateContext.Provider>
       {/*<p className="app-name">HELLO WORLD!</p>*/}
     </div>

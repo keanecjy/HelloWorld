@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import './styles.css';
 import ListOfImages from '../components/picturecontainer/ListOfImages';
@@ -6,28 +6,41 @@ import { StateContext } from '../App';
 import io from 'socket.io-client';
 
 const LoginModal = () => {
-  const socket = io('http://localhost:5000', {
-    withCredentials: true,
-    extraHeaders: {
-      'my-custom-header': 'abcd',
-    },
+  let socket;
+  useEffect(() => {
+    socket = io('http://localhost:5000', {
+      withCredentials: true,
+      extraHeaders: {
+        'my-custom-header': 'abcd',
+      },
+    });
   });
 
-  const { name, image, setName, setImage } = useContext(StateContext);
+  const { name, image, setName, setImage, setIsUserInputted } = useContext(StateContext);
   const [show, setShow] = useState(true);
 
   const handleSubmit = (event) => {
     setShow(false);
     event.preventDefault();
     // Set initialized field to prevent modal from showing up again
-    window.localStorage.setItem('initialized', 'yes');
+    // window.localStorage.setItem('initialized', 'yes');
     // Name set
-    window.localStorage.setItem('name', name);
+    // window.localStorage.setItem('name', name);
     const newUser = {
       username: name,
       avatar: image,
     };
     socket.emit('inputUser', newUser);
+
+    setIsUserInputted(true);
+
+    socket.on('outputUser', (users) =>
+      users.map((user) => console.log('user ' + user.username + ' joined'))
+    );
+
+    socket.emit('inputMessage', {
+      text: "Hello everybody, I'm " + name,
+    });
   };
 
   const handleChange = (event) => setName(event.target.value);
