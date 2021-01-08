@@ -83,13 +83,13 @@ io.on("connection", (socket) => {
     .sort({ _id: 1 })
     .then((users) => {
       socket.emit("outputUser", users);
+      socket.emit("onlineUsers", users.length);
 
       Message.find({})
         .limit(100)
         .sort({ _id: 1 })
         .then((messages) => {
           socket.emit("outputMessage", messages);
-          socket.emit("connected", null);
         })
         .catch((err) => console.log(err));
     })
@@ -112,40 +112,46 @@ io.on("connection", (socket) => {
       .save()
       .then((user) => {
         io.emit("outputUser", [user]);
+        User.find({}).then((users) => {
+          io.emit("onlineUsers", users.length);
+        });
       })
       .catch((err) => console.log(err));
   });
 
   socket.on("inputMessage", (data) => {
-    if (isEmpty(data.username) || isEmpty(data.text)) {
+    if (isEmpty(data.text)) {
       setStatus("Please enter name and text");
     } else {
-      const newMessage = new Message({
-        username: data.username,
-        text: data.text,
-      });
+      User.findOne({ _id: socket.id })
+        .then((user) => {
+          console.log(user);
+          const newMessage = new Message({
+            username: user.username,
+            text: data.text,
+          });
 
-      newMessage
-        .save()
-        .then((message) => {
-          io.emit("outputMessage", [message]);
+          newMessage
+            .save()
+            .then((message) => {
+              io.emit("outputMessage", [message]);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
     }
   });
 
   socket.on("inputPosition", (data) => {
-    if (isEmpty(data.username) || isEmpty(data.lng) || isEmpty(data.lat)) {
-      setStatus("No username, lng, or lat included");
+    if (isEmpty(data.lng) || isEmpty(data.lat)) {
+      setStatus("No lng or lat included");
     } else {
       User.findOne({ _id: socket.id })
         .then((userToUpdate) => {
           if (!userToUpdate) {
-            console.log(
-              `User with username ${data.username} does not exist in database`
-            );
+            console.log(`User with ID ${socket.id} does not exist in database`);
           } else {
             userToUpdate.lng = data.lng;
             userToUpdate.lat = data.lat;
@@ -165,6 +171,9 @@ io.on("connection", (socket) => {
     User.findOneAndDelete({ _id: socket.id })
       .then(() => {
         socket.broadcast.emit("userLeft", socket.id);
+        User.count({}, (err, count) => {
+          socket.broadcast.emit("onlineUsers", count);
+        });
       })
       .catch((err) => console.log(err));
   });
@@ -180,6 +189,20 @@ mongoose
 
 // Uses process.env.PORT if available otherwise 5000
 const port = process.env.PORT || 5000;
+
+const cleanDatabase = async () => {
+  await mongoose.connection.db.dropDatabase();
+  server.close();
+};
+
+// listen for TERM signal .e.g. kill
+process.on("SIGTERM", () => cleanDatabase());
+
+// listen for INT signal e.g. Ctrl-C
+process.on("SIGINT", () => cleanDatabase());
+
+// or even exit event
+process.on("exit", () => cleanDatabase());
 
 // Tells the server which port to listen on
 server.listen(port, () =>

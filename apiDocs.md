@@ -67,10 +67,10 @@ socket.emit("inputUser", newUser);
 
 Emitted by frontend to backend when a user sent a message.
 
-Params to be sent: {username, text}
+Params to be sent: {text}
 
 ### inputPosition
 
 Emitted by frontend to backend when a user moves to another location (For example, you might want to emit this event every 5 seconds)
 
-Params to be sent: {username, lat, long}
+Params to be sent: {lat, long}

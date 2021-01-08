@@ -1,18 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 import logo from "./HelloWorldLogo.svg";
 import "./App.css";
-import openSocket from "socket.io-client";
+import io from "socket.io-client";
+import GoogleMapReact from "google-map-react";
+import { fakeUsers } from "./util/fakeUsers";
 import UserPin from "./components/MapObject/UserPin";
 import Cluster from "./components/MapObject/Cluster";
-import GoogleMapReact from "google-map-react";
 import supercluster from "points-cluster";
-import {fakeUsers} from "./util/fakeUsers";
-import {map} from "ramda";
 
 const SERVER_URL = "http://localhost:5000";
 
-// const { io } = window["socket.io-3.0.5.min"];
-const socket = openSocket(SERVER_URL);
 const SG_POSITION = {lat: 1.3521, lng: 103.8198};
 
 function createMapOptions(maps) {
@@ -28,6 +25,8 @@ function App() {
     const [username, setUsername] = useState("John");
     const [avatar, setAvatar] = useState("male1");
     const [users, setUsers] = useState(fakeUsers);
+    const [numOnline, setNumOnline] = useState(0);
+    const [messages, setMessages] = useState([]);
 
     const [currLocation, setCurrLocation] = useState(SG_POSITION);
     const [mapOptions, setMapOptions] = useState(null);
@@ -35,6 +34,22 @@ function App() {
 
     // componentDidMount
     useEffect(() => {
+        const socket = io("http://localhost:5000", {
+            withCredentials: true,
+            extraHeaders: {
+                "my-custom-header": "abcd",
+            },
+        });
+
+        socket.on("connect", (message) => {
+            console.log("A new user has connected");
+        });
+
+        socket.on("status", (msg) => {
+            console.log(msg);
+        });
+
+        // get location
         if ("geolocation" in navigator) {
             console.log("Location enabled");
 
@@ -45,42 +60,71 @@ function App() {
                 }
                 setCurrLocation(location);
                 setMapOptions({center: location, zoom: 15})
+
                 // add user
-                const newUser = {username: username, avatar: avatar, ...location}
-                socket.emit("inputUser", newUser);
+                socket.emit("inputUser", {
+                        username: username,
+                        avatar: avatar,
+                        ...location
+                    }
+                );
             })
 
             navigator.geolocation.watchPosition(position => {
                 if (currLocation.lat !== position.coords.latitude || currLocation.lng !== position.coords.longitude) {
-                    setCurrLocation({
+                    const location = {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
-                    });
-                    const inputPos = {...currLocation, username: username}
-                    socket.emit("inputPosition", inputPos)
+                    };
+
+                    setCurrLocation(location);
+                    socket.emit("inputPosition", location);
                 }
             })
         } else {
             console.log("Location disabled");
+            socket.emit("inputUser", {
+                    username: username,
+                    avatar: avatar,
+                    ...currLocation
+                }
+            );
         }
 
         socket.on("outputUser", allUsers => {
-            console.log("outputUser", allUsers)
-            setUsers(allUsers)
+            users.map((user) => console.log("user " + user.username + " joined"))
+            setUsers({...users, allUsers});
         });
+
         socket.on("outputPosition", newUsers => {
-            console.log("outputPosition", newUsers)
+            newUsers.map((user) =>
+                console.log(
+                    "user " + user.username + " moved to " + user.long + " " + user.lat
+                )
+            );
             const ids = new Set(newUsers.map(u => u.id));
             setUsers([...newUsers, ...users.filter(u => !ids.has(u.id))]);
         });
-        socket.on("userLeft", userId => {
-            console.log("userLeft", userId)
-            setUsers([...users.filter(u => u.id !== userId)])
+
+        socket.on("onlineUsers", (number) => {
+            console.log("users: " + number);
+            setNumOnline(number);
         });
 
-        // socket.on("outputMessage", messages => {
-        //
-        // });
+        socket.on("userLeft", userId => {
+            console.log("user " + userId + " left");
+            setUsers([...users.filter(u => u.id !== userId)]);
+        });
+
+        socket.emit("inputMessage", {
+            text: "Hello everybody, I'm " + username,
+        });
+
+        socket.on("outputMessage", (messages) => {
+            messages.map((message) => console.log(message.text));
+            setMessages(messages);
+        });
+
     }, [])
 
     useEffect(() => {
