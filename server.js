@@ -11,13 +11,17 @@ const mongoose = require("mongoose");
 const { queryParser } = require("express-query-parser");
 const helmet = require("helmet");
 const compression = require("compression");
+const Message = require("./models/Message");
+const User = require("./models/User");
+const isEmpty = require("lodash/isEmpty");
 
 // Initialize app to a server
 const app = express();
 const server = require("http").createServer(app);
+
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:64226"],
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,
@@ -27,7 +31,7 @@ const cors = require("cors");
 
 var corsOptions = {
   // Specifies the origin(s) from which a server request can occur aside from its own origin
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "http://localhost:64226"],
 };
 
 app.use(cors(corsOptions));
@@ -78,7 +82,33 @@ io.on("connection", (socket) => {
   console.log("Successfully established a new connection");
   console.log(socket.id);
 
-  socket.emit("connected", "New user connected");
+  Message.find({})
+    .limit(100)
+    .sort({ _id: 1 })
+    .then((messages) => {
+      console.log(messages);
+      socket.emit("output", messages);
+    })
+    .catch((err) => console.log(err));
+
+  const setStatus = (msg) => {
+    socket.emit("status", msg);
+  };
+
+  socket.on("input", (data) => {
+    if (isEmpty(data.username) || isEmpty(data.text)) {
+      setStatus("Please enter name and text");
+    } else {
+      const newMessage = new Message({
+        username: data.username,
+        text: data.text,
+      });
+
+      newMessage.save().then((message) => {
+        socket.emit("output", [message]);
+      });
+    }
+  });
 
   socket.on("disconnect", () => {
     console.log("A user has left");

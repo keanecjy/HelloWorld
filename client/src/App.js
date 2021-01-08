@@ -2,6 +2,16 @@ import logo from "./HelloWorldLogo.svg";
 import "./App.css";
 
 function App() {
+  // const socket = io("http://localhost:5000", {
+  //     withCredentials: true,
+  //     extraHeaders: {
+  //       "my-custom-header": "abcd",
+  //     },
+  //   });
+
+  // socket.emit("input", { username: "Frank", text: "Hello!" });
+
+  // socket.emit("input", { username: "Dhafin", text: "Hello to you too!" });
 
   return (
     <div className="App">
