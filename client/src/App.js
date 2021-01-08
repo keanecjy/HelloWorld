@@ -109,8 +109,8 @@ function App() {
     } else {
       console.log('Location disabled');
       socket.emit('inputUser', {
-        username: username,
-        avatar: avatar,
+        username: name,
+        avatar: image,
         ...currLocation,
       });
     }
