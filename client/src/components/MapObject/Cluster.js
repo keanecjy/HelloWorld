@@ -4,7 +4,7 @@ import './Cluster.css';
 function Cluster({ numPoints }) {
   return (
     <div className={'cluster-group'}>
-      <p>{numPoints}</p>
+      {numPoints}
     </div>
   );
 }

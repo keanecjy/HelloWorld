@@ -44,8 +44,8 @@ function App() {
     });
 
     socket.on('outputUser', (allUsers) => {
-      users.map((user) => console.log('user ' + user.username + ' joined'));
-      setUsers({ ...users, allUsers });
+      allUsers.map((user) => console.log('user ' + user.username + ' joined'));
+      setUsers([ ...users, ...allUsers ]);
     });
 
     socket.on('outputPosition', (newUsers) => {
