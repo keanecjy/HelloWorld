@@ -1,37 +1,37 @@
 // Retrieve confidential information from .env file
-const result = require("dotenv").config();
+const result = require('dotenv').config();
 
 if (result.error) {
   throw result.error;
 }
 
 // import statements
-const express = require("express");
-const mongoose = require("mongoose");
-const { queryParser } = require("express-query-parser");
-const helmet = require("helmet");
-const compression = require("compression");
-const Message = require("./models/Message");
-const User = require("./models/User");
-const isEmpty = require("lodash/isEmpty");
+const express = require('express');
+const mongoose = require('mongoose');
+const { queryParser } = require('express-query-parser');
+const helmet = require('helmet');
+const compression = require('compression');
+const Message = require('./models/Message');
+const User = require('./models/User');
+const isEmpty = require('lodash/isEmpty');
 
 // Initialize app to a server
 const app = express();
-const server = require("http").createServer(app);
+const server = require('http').createServer(app);
 
-const io = require("socket.io")(server, {
+const io = require('socket.io')(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:64226"],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
+    origin: ['http://localhost:3000', 'http://localhost:64226'],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['my-custom-header'],
     credentials: true,
   },
 });
-const cors = require("cors");
+const cors = require('cors');
 
 var corsOptions = {
   // Specifies the origin(s) from which a server request can occur aside from its own origin
-  origin: ["http://localhost:3000", "http://localhost:64226"],
+  origin: ['http://localhost:3000', 'http://localhost:64226'],
 };
 
 app.use(cors(corsOptions));
@@ -60,7 +60,7 @@ app.use(
 );
 
 // Gets the URI of the MongoDB database used by app
-const db = require("./config/keys").mongoURI; // Can change to mongoAtlasURI to connect to cloud database
+const db = require('./config/keys').mongoURI; // Can change to mongoAtlasURI to connect to cloud database
 
 // mongoDB settings
 const options = {
@@ -78,28 +78,28 @@ const options = {
 };
 
 // Socket.io connections between client and server
-io.on("connection", (socket) => {
+io.on('connection', (socket) => {
   User.find({})
     .sort({ _id: 1 })
     .then((users) => {
-      socket.emit("outputUser", users);
-      socket.emit("onlineUsers", users.length);
+      socket.emit('outputUser', users);
+      socket.emit('onlineUsers', users.length);
 
       Message.find({})
         .limit(100)
         .sort({ _id: 1 })
         .then((messages) => {
-          socket.emit("outputMessage", messages);
+          socket.emit('outputMessage', messages);
         })
         .catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
 
   const setStatus = (msg) => {
-    socket.emit("status", msg);
+    socket.emit('status', msg);
   };
 
-  socket.on("inputUser", (data) => {
+  socket.on('inputUser', (data) => {
     const newUser = new User({
       _id: socket.id,
       username: data.username,
@@ -111,17 +111,17 @@ io.on("connection", (socket) => {
     newUser
       .save()
       .then((user) => {
-        io.emit("outputUser", [user]);
+        io.emit('outputUser', [user]);
         User.find({}).then((users) => {
-          io.emit("onlineUsers", users.length);
+          io.emit('onlineUsers', users.length);
         });
       })
       .catch((err) => console.log(err));
   });
 
-  socket.on("inputMessage", (data) => {
+  socket.on('inputMessage', (data) => {
     if (isEmpty(data.text)) {
-      setStatus("Please enter name and text");
+      setStatus('Please enter name and text');
     } else {
       User.findOne({ _id: socket.id })
         .then((user) => {
@@ -134,7 +134,7 @@ io.on("connection", (socket) => {
           newMessage
             .save()
             .then((message) => {
-              io.emit("outputMessage", [message]);
+              io.emit('outputMessage', [message]);
             })
             .catch((err) => {
               console.log(err);
@@ -158,7 +158,7 @@ io.on("connection", (socket) => {
             userToUpdate
               .save()
               .then((updatedUser) => {
-                io.emit("outputPosition", [updatedUser]);
+                io.emit('outputPosition', [updatedUser]);
               })
               .catch((err) => console.log(err));
           }
@@ -167,12 +167,12 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on('disconnect', () => {
     User.findOneAndDelete({ _id: socket.id })
       .then(() => {
-        socket.broadcast.emit("userLeft", socket.id);
+        socket.broadcast.emit('userLeft', socket.id);
         User.count({}, (err, count) => {
-          socket.broadcast.emit("onlineUsers", count);
+          socket.broadcast.emit('onlineUsers', count);
         });
       })
       .catch((err) => console.log(err));
@@ -183,7 +183,7 @@ io.on("connection", (socket) => {
 mongoose
   .connect(db, options)
   .then(() => {
-    console.log("MongoDB successfully connected");
+    console.log('MongoDB successfully connected');
   })
   .catch((err) => console.log(err));
 
@@ -196,15 +196,13 @@ const cleanDatabase = async () => {
 };
 
 // listen for TERM signal .e.g. kill
-process.on("SIGTERM", () => cleanDatabase());
+process.on('SIGTERM', () => cleanDatabase());
 
 // listen for INT signal e.g. Ctrl-C
-process.on("SIGINT", () => cleanDatabase());
+process.on('SIGINT', () => cleanDatabase());
 
 // or even exit event
-process.on("exit", () => cleanDatabase());
+process.on('exit', () => cleanDatabase());
 
 // Tells the server which port to listen on
-server.listen(port, () =>
-  console.log(`Server up and running on port ${port}!`)
-);
+server.listen(port, () => console.log(`Server up and running on port ${port}!`));
