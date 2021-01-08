@@ -79,15 +79,19 @@ const options = {
 
 // Socket.io connections between client and server
 io.on("connection", (socket) => {
-  console.log("Successfully established a new connection");
-  console.log(socket.id);
-
-  Message.find({})
-    .limit(100)
+  User.find({})
     .sort({ _id: 1 })
-    .then((messages) => {
-      console.log(messages);
-      socket.emit("output", messages);
+    .then((users) => {
+      socket.emit("outputUser", users);
+
+      Message.find({})
+        .limit(100)
+        .sort({ _id: 1 })
+        .then((messages) => {
+          socket.emit("outputMessage", messages);
+          socket.emit("connected", null);
+        })
+        .catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
 
@@ -95,7 +99,23 @@ io.on("connection", (socket) => {
     socket.emit("status", msg);
   };
 
-  socket.on("input", (data) => {
+  socket.on("inputUser", (data) => {
+    const newUser = new User({
+      _id: socket.id,
+      username: data.username,
+      lat: data.lat,
+      long: data.long,
+    });
+
+    newUser
+      .save()
+      .then((user) => {
+        io.emit("outputUser", [user]);
+      })
+      .catch((err) => console.log(err));
+  });
+
+  socket.on("inputMessage", (data) => {
     if (isEmpty(data.username) || isEmpty(data.text)) {
       setStatus("Please enter name and text");
     } else {
@@ -104,15 +124,48 @@ io.on("connection", (socket) => {
         text: data.text,
       });
 
-      newMessage.save().then((message) => {
-        socket.emit("output", [message]);
-      });
+      newMessage
+        .save()
+        .then((message) => {
+          io.emit("outputMessage", [message]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+
+  socket.on("inputPosition", (data) => {
+    if (isEmpty(data.username) || isEmpty(data.long) || isEmpty(data.lat)) {
+      setStatus("No username, long, or lan included");
+    } else {
+      User.findOne({ _id: socket.id })
+        .then((userToUpdate) => {
+          if (!userToUpdate) {
+            console.log(
+              `User with username ${data.username} does not exist in database`
+            );
+          } else {
+            userToUpdate.long = data.long;
+            userToUpdate.lat = data.lat;
+            userToUpdate
+              .save()
+              .then((updatedUser) => {
+                io.emit("outputPosition", [updatedUser]);
+              })
+              .catch((err) => console.log(err));
+          }
+        })
+        .catch((err) => console.log(err));
     }
   });
 
   socket.on("disconnect", () => {
-    console.log("A user has left");
-    console.log(socket.id);
+    User.findOneAndDelete({ _id: socket.id })
+      .then(() => {
+        socket.broadcast.emit("userLeft", socket.id);
+      })
+      .catch((err) => console.log(err));
   });
 });
 
