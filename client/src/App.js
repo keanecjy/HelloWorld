@@ -6,6 +6,7 @@ import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
 import ChatBox from './components/chatbox/ChatBox';
 import GoogleMap from './components/GoogleMap';
+import ReCenterIcon from './components/button/ReCenterIcon';
 
 const SERVER_URL = 'http://localhost:5000';
 export const StateContext = React.createContext({});
@@ -135,14 +136,7 @@ function App() {
         <LoginModal />
         <NameHolder />
         <GoogleMap users={users} />
-        <button
-          className="recenter-button"
-          onClick={() => {
-            setCurrLocation(currLocation);
-          }}
-        >
-          RE-CENTER
-        </button>
+        <ReCenterIcon handleClick={() => setCurrLocation(currLocation)} />
         <ChatBox />
       </StateContext.Provider>
       {/*<p className="app-name">HELLO WORLD!</p>*/}

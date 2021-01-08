@@ -6,12 +6,6 @@
   color: #61dafb;
 }
 
-.recenter-button {
-  bottom: 30px;
-  left: 10px;
-  position: fixed;
-}
-
 .app-name {
   bottom: 0;
   left: calc(50% - 61px);
