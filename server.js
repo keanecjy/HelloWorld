@@ -61,6 +61,8 @@ app.use(
 
 // Gets the URI of the MongoDB database used by app
 const db = require("./config/keys").mongoURI; // Can change to mongoAtlasURI to connect to cloud database
+const { isObject } = require("util");
+const { indexOf } = require("lodash");
 
 // mongoDB settings
 const options = {
@@ -85,9 +87,17 @@ io.on("connection", (socket) => {
   Message.find({})
     .limit(100)
     .sort({ _id: 1 })
-    .then((messages) => {
-      console.log(messages);
-      socket.emit("output", messages);
+    .then((users) => {
+      socket.emit("outputUser", users);
+      io.emit("onlineUsers", users.length);
+
+      Message.find({})
+        .limit(100)
+        .sort({ _id: 1 })
+        .then((messages) => {
+          socket.emit("outputMessage", messages);
+        })
+        .catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
 
@@ -111,8 +121,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("A user has left");
-    console.log(socket.id);
+    User.findOneAndDelete({ _id: socket.id })
+      .then(() => {
+        socket.broadcast.emit("userLeft", socket.id);
+        User.count({}, (err, count) => {
+          socket.broadcast.emit("onlineUsers", count);
+        });
+      })
+      .catch((err) => console.log(err));
   });
 });
 

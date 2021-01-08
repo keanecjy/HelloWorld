@@ -51,8 +51,9 @@
       },
     });
 
-    socket.on("connected", (message) => {
-      console.log(message);
+
+    socket.on("connect", (message) => {
+      console.log("A new user has connected");
     });
 
     socket.on("status", (msg) => {
