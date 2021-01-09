@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/HelloWorld/static/css/main.c4349de6.chunk.css",
+    "main.js": "/HelloWorld/static/js/main.49929377.chunk.js",
+    "main.js.map": "/HelloWorld/static/js/main.49929377.chunk.js.map",
+    "runtime-main.js": "/HelloWorld/static/js/runtime-main.b2a631d6.js",
+    "runtime-main.js.map": "/HelloWorld/static/js/runtime-main.b2a631d6.js.map",
+    "static/js/2.71d029e6.chunk.js": "/HelloWorld/static/js/2.71d029e6.chunk.js",
+    "static/js/2.71d029e6.chunk.js.map": "/HelloWorld/static/js/2.71d029e6.chunk.js.map",
+    "static/js/3.942555e6.chunk.js": "/HelloWorld/static/js/3.942555e6.chunk.js",
+    "static/js/3.942555e6.chunk.js.map": "/HelloWorld/static/js/3.942555e6.chunk.js.map",
+    "index.html": "/HelloWorld/index.html",
+    "static/css/main.c4349de6.chunk.css.map": "/HelloWorld/static/css/main.c4349de6.chunk.css.map",
+    "static/js/2.71d029e6.chunk.js.LICENSE.txt": "/HelloWorld/static/js/2.71d029e6.chunk.js.LICENSE.txt",
+    "static/media/boy1.2e82546e.svg": "/HelloWorld/static/media/boy1.2e82546e.svg",
+    "static/media/boy2.59009ebf.svg": "/HelloWorld/static/media/boy2.59009ebf.svg",
+    "static/media/boy3.e57c8b6c.svg": "/HelloWorld/static/media/boy3.e57c8b6c.svg",
+    "static/media/girl1.8a35fe99.svg": "/HelloWorld/static/media/girl1.8a35fe99.svg",
+    "static/media/girl2.a0b1b314.svg": "/HelloWorld/static/media/girl2.a0b1b314.svg",
+    "static/media/girl3.4993fb4c.svg": "/HelloWorld/static/media/girl3.4993fb4c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b2a631d6.js",
+    "static/js/2.71d029e6.chunk.js",
+    "static/css/main.c4349de6.chunk.css",
+    "static/js/main.49929377.chunk.js"
+  ]
+}
