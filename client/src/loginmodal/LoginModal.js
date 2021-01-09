@@ -1,13 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import './styles.css';
 import ListOfImages from '../components/picturecontainer/ListOfImages';
 import { StateContext } from '../App';
-import io from 'socket.io-client';
 
 const LoginModal = () => {
-
-  const { name, image, setName, setImage, setIsUserInputted, sendUserInput } = useContext(StateContext);
+  const { name, image, setName, setImage, sendUserInput, sendMessage } = useContext(StateContext);
   const [show, setShow] = useState(true);
 
   const handleSubmit = (event) => {
@@ -17,11 +15,9 @@ const LoginModal = () => {
     // window.localStorage.setItem('initialized', 'yes');
     // Name set
     // window.localStorage.setItem('name', name);
+
     sendUserInput(name, image);
-
-    setIsUserInputted(true);
-
-    
+    sendMessage("Hello everybody, I'm " + name);
   };
 
   const handleChange = (event) => setName(event.target.value);

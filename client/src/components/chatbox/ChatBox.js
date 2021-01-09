@@ -23,7 +23,7 @@ function ChatBox({ messages }) {
       <ChatTitle onMinimise={toggleChatVisibility}/>
       {isChatVisible && (
         <div className={'chat-body'} id={'messages'}>
-          <MessageList />
+          <MessageList messages={messages}/>
         </div>
       )}
       <ChatInput />

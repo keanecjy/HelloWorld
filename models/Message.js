@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // create User schema
 const MessageSchema = new Schema({
+  _id: {
+    type: String,
+    required: true,
+  },
   username: {
     type: String,
     required: true,
