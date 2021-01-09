@@ -1,0 +1,16 @@
+.cluster-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+  color: #fff;
+  text-transform: uppercase;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background-color: gray;
+  background-size: cover;
+  background-position: center;
+  animation: smooth-entry 0.3s;
+}
