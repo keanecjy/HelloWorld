@@ -1,0 +1,93 @@
+:root {
+  --chat-width: min(25vw, 250px);
+}
+
+.column-flex {
+  background-color: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  right: 0px;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0px;
+  width: var(--chat-width);
+  z-index: 1000;
+}
+
+.chat-header {
+  background-color: black;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.chat-header h1 {
+  font-size: 20px;
+  color: white;
+}
+
+.chat-body {
+  background-color: white;
+  height: 50vh;
+  overflow-y: scroll;
+}
+
+.message-list {
+  list-style-type: none;
+}
+
+.chat-name {
+  font-size: 12px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.chat-bubble {
+  position: relative;
+  background: #00aabb;
+  width: 80%;
+
+  margin-right: 5px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+
+  font-size: 12px;
+  color: white;
+  text-align: left;
+
+  border-radius: 1em;
+}
+
+.chat-form {
+  background-color: white;
+  flex-direction: row;
+  display: block;
+  margin-bottom: 0;
+}
+
+.chat-form-input {
+  font-style: normal;
+  font-size: 20px;
+  line-height: 33px;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.chat-send-button {
+  margin: 0;
+  padding: 5px;
+  width: 100%;
+  border-radius: 0;
+  color: gainsboro;
+}
+
+.appear-bot-right {
+  right: 20px;
+  position: fixed;
+  bottom: 100px;
+  width: fit-content;
+}

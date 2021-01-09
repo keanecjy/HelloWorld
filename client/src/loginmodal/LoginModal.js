@@ -3,31 +3,21 @@ import { Modal, Form } from 'react-bootstrap';
 import './styles.css';
 import ListOfImages from '../components/picturecontainer/ListOfImages';
 import { StateContext } from '../App';
-import io from 'socket.io-client';
 
 const LoginModal = () => {
-  const socket = io('http://localhost:5000', {
-    withCredentials: true,
-    extraHeaders: {
-      'my-custom-header': 'abcd',
-    },
-  });
-
-  const { name, image, setName, setImage, currLocation } = useContext(StateContext);
+  const { name, image, setName, setImage, sendUserInput, sendMessage } = useContext(StateContext);
   const [show, setShow] = useState(true);
 
   const handleSubmit = (event) => {
     setShow(false);
     event.preventDefault();
-    const newUser = {
-      username: name,
-      avatar: image,
-      ...currLocation,
-    };
-    socket.emit('inputUser', newUser);
-    socket.on('outputUser', (users) =>
-      users.map((user) => console.log('user ' + user.username + ' joined'))
-    );
+    // Set initialized field to prevent modal from showing up again
+    // window.localStorage.setItem('initialized', 'yes');
+    // Name set
+    // window.localStorage.setItem('name', name);
+
+    sendUserInput(name, image);
+    sendMessage("Hello everybody, I'm " + name);
   };
 
   const handleChange = (event) => setName(event.target.value);

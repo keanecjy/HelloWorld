@@ -82,6 +82,7 @@ io.on('connection', (socket) => {
   User.find({})
     .sort({ _id: 1 })
     .then((users) => {
+      // console.log(users);
       socket.emit('outputUser', users);
       socket.emit('onlineUsers', users.length);
 
@@ -120,24 +121,29 @@ io.on('connection', (socket) => {
 
   socket.on('inputMessage', (data) => {
     if (isEmpty(data.text)) {
-      setStatus('Please enter name and text');
+      setStatus('Please enter text');
     } else {
       User.findOne({ _id: socket.id })
         .then((user) => {
-          console.log(user);
-          const newMessage = new Message({
-            username: user.username,
-            text: data.text,
-          });
-
-          newMessage
-            .save()
-            .then((message) => {
-              io.emit('outputMessage', [message]);
-            })
-            .catch((err) => {
-              console.log(err);
+          if (user) {
+            const newMessage = new Message({
+              _id: Math.floor(Date.now() / 1000) + "-" + socket.id,
+              username: user.username,
+              userId: socket.id,
+              text: data.text,
             });
+
+            console.log('going to emit');
+            newMessage
+              .save()
+              .then((message) => {
+                console.log('emitting');
+                io.emit('outputMessage', [message]);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
         })
         .catch((err) => console.log(err));
     }
@@ -169,30 +175,37 @@ io.on('connection', (socket) => {
   socket.on('inputUpdateUser', (updatedData) => {
     User.findOne({ _id: socket.id })
       .then((userToUpdate) => {
-        userToUpdate.username = isEmpty(updatedData.username)
-          ? userToUpdate.username
-          : updatedData.username;
-        userToUpdate.avatar = isEmpty(updatedData.avatar)
-          ? userToUpdate.avatar
-          : updatedData.avatar;
-        userToUpdate.lat = isEmpty(updatedData.lat) ? userToUpdate.lat : updatedData.lat;
-        userToUpdate.lng = isEmpty(updatedData.lng) ? userToUpdate.lng : updatedData.lng;
+        if (userToUpdate) {
+          userToUpdate.username = isEmpty(updatedData.username)
+            ? userToUpdate.username
+            : updatedData.username;
+          userToUpdate.avatar = isEmpty(updatedData.avatar)
+            ? userToUpdate.avatar
+            : updatedData.avatar;
+          userToUpdate.lat = isEmpty(updatedData.lat) ? userToUpdate.lat : updatedData.lat;
+          userToUpdate.lng = isEmpty(updatedData.lng) ? userToUpdate.lng : updatedData.lng;
 
-        userToUpdate.save().then((updatedUser) => {
-          io.emit('outputUpdateUser', [updatedUser]);
-        })
-        .catch(err => console.log(err));
+          userToUpdate
+            .save()
+            .then((updatedUser) => {
+              io.emit('outputUpdateUser', [updatedUser]);
+            })
+            .catch((err) => console.log(err));
+        }
       })
       .catch((err) => console.log(err));
   });
 
   socket.on('disconnect', () => {
-    User.findOneAndDelete({ _id: socket.id })
-      .then(() => {
-        socket.broadcast.emit('userLeft', socket.id);
-        User.count({}, (err, count) => {
-          socket.broadcast.emit('onlineUsers', count);
-        });
+    User.findOneAndRemove({ _id: socket.id })
+      .then((user) => {
+        if (user) {
+          console.log('emitting disconnect for user ' + user.username);
+          socket.broadcast.emit('userLeft', socket.id);
+          User.count({}, (err, count) => {
+            socket.broadcast.emit('onlineUsers', count);
+          });
+        }
       })
       .catch((err) => console.log(err));
   });

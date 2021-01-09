@@ -1,23 +1,27 @@
 import React from 'react';
 import './UserPin.css';
 import SpeechBubble from './SpeechBubble';
+import UserAvatar from "../UserAvatar";
 
-function UserAvatar({ scale }) {
-  return (
-    // todo: avatar
-    <div />
-  );
-}
-
-function UserPin({ details }) {
-  const { chatMessage, iconColor, name } = details;
+function UserPin({ username, avatar, message }) {
   return (
     <div className={'user'}>
-      {chatMessage && <SpeechBubble color={iconColor}>{chatMessage}</SpeechBubble>}
-      <div style={iconColor && { backgroundColor: iconColor }} className={'user-avatar'}>
-        <UserAvatar />
+      {message && <SpeechBubble>{message}</SpeechBubble>}
+      <div>
+        <UserAvatar
+          avatar={avatar}
+          style={{
+            width: "48px",
+            height: "48px",
+            color: "#fff",
+            border: "2px solid #fff",
+            borderRadius: "50%",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
       </div>
-      <p className={'user-name'}>{name || 'Un-named'}</p>
+      <p className={'user-name'}>{username || 'No Name'}</p>
     </div>
   );
 }

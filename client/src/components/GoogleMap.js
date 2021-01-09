@@ -28,13 +28,12 @@ function GoogleMap({ users }) {
         radius: 60,
       });
 
-      console.log(mapOptions);
       setClusters(
         clusters(mapOptions).map(({ wx, wy, numPoints, points }) => ({
           lat: wy,
           lng: wx,
           numPoints: numPoints,
-          id: `${numPoints}_${points[0].id}`,
+          id: `${numPoints}_${points[0]._id}`,
           points: points,
         }))
       );
@@ -58,8 +57,10 @@ function GoogleMap({ users }) {
                 <UserPin
                   lat={groups.points[0].lat}
                   lng={groups.points[0].lng}
-                  details={groups.points[0].details}
-                  key={groups.id}
+                  username={groups.points[0].username}
+                  avatar={groups.points[0].avatar}
+                  key={groups.points[0]._id}
+                  message={groups.points[0].latestMessage || null}
                 />
               );
             } else {
