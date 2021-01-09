@@ -1,0 +1,31 @@
+.user {
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s;
+  animation: smooth-entry 0.3s;
+}
+
+.user-name {
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 80px;
+  text-align: center;
+}
+
+@keyframes smooth-entry {
+  from {
+    transform: translateY(-20%);
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

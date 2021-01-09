@@ -35,7 +35,7 @@ const LoginModal = () => {
         <input
           required
           type="text"
-          placeholder="input your name"
+          placeholder="Input your name"
           onChange={handleChange}
           className="name-box"
         />
