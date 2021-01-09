@@ -24,7 +24,7 @@ function ChatInput() {
           placeholder={'Type a message...'}
           type={'text'}
         />
-        <IoMdSend color={'#40A7E3'} size={'1.4em'} type={'submit'}/>
+        <IoMdSend color={'#40A7E3'} size={'1.4em'} type={'submit'} />
       </div>
     </form>
   );

@@ -1,6 +1,6 @@
-import React from "react";
-import logo from "../HelloWorldLogo.svg";
-import "./styles.css";
+import React from 'react';
+import logo from '../HelloWorldLogo.svg';
+import './styles.css';
 
 const FrontPage = ({ setScreen }) => {
   return (

@@ -14,16 +14,16 @@ function ChatBox({ messages }) {
   const [isChatVisible, toggleChatVisibility] = useState(true);
   useEffect(() => {
     if (isChatVisible) {
-      scrollToBottom("messages");
+      scrollToBottom('messages');
     }
   }, [messages, isChatVisible]);
 
   return (
     <div className={'column-flex'}>
-      <ChatTitle onMinimise={toggleChatVisibility}/>
+      <ChatTitle onMinimise={toggleChatVisibility} />
       {isChatVisible && (
-        <div className={'chat-body'} id={"messages"}>
-          <MessageList messages={messages}/>
+        <div className={'chat-body'} id={'messages'}>
+          <MessageList messages={messages} />
         </div>
       )}
       <ChatInput />

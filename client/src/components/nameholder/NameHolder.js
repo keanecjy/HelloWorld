@@ -30,9 +30,9 @@ const NameHolder = () => {
     const newName = event.target.value;
     setName(newName);
     socket.emit('inputUpdateUser', {
-      username: newName
-    })
-  }
+      username: newName,
+    });
+  };
 
   return (
     <>
@@ -53,11 +53,7 @@ const NameHolder = () => {
           style={{ width: `50px` }}
           onClick={() => showAvatarPicker(true)}
         />
-        <input
-          className="input-name"
-          placeholder={name}
-          onChange={handleNameChange}
-        />
+        <input className="input-name" placeholder={name} onChange={handleNameChange} />
       </div>
     </>
   );
