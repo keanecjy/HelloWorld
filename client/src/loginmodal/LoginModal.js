@@ -44,7 +44,7 @@ const LoginModal = () => {
           <ListOfImages currentSelected={image} handleSelection={setImage} />
         </div>
         <Modal.Footer id="modal-footer">
-          <button type="submit">Get chatting!</button>
+          <button type="submit" className={"my-button"}>Get chatting!</button>
         </Modal.Footer>
       </Form>
     </Modal>
