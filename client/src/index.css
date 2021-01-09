@@ -14,7 +14,7 @@ body {
   transition: all 0.25s linear;
 }
 
-button {
+.my-button {
   margin-top: 50px;
   border-radius: 30px;
   padding: 15px 25px;
@@ -27,7 +27,7 @@ button {
   border: none;
 }
 
-button:hover {
+.my-button:hover {
   background-color: #29ae85;
 }
 
