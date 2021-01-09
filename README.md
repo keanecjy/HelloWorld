@@ -2,7 +2,7 @@
 
 ## Feeling bored? Chat with people around the world!
 
-#### HelloWorld is an application designed for connecting users throughout the globe with an interactive map display.
+HelloWorld is an application designed for connecting users throughout the globe with an interactive map display.
 
 ## Screenshots
 ![starting page](client/images/HelloWorld3.png)*Joining in the fun!*
