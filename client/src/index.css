@@ -19,7 +19,7 @@ button {
   border-radius: 30px;
   padding: 15px 25px;
   cursor: pointer;
-  background-color: #3AD064;
+  background-color: #3ad064;
   transition: all 0.25s linear;
   font-size: inherit;
   font-family: inherit;
@@ -28,7 +28,7 @@ button {
 }
 
 button:hover {
-  background-color: #29AE85;
+  background-color: #29ae85;
 }
 
 input {
@@ -36,9 +36,9 @@ input {
   opacity: 0.95;
 }
 
-input::placeholder {
-  opacity: 0.6;
-}
+/*input::placeholder {*/
+/*  opacity: 0.6;*/
+/*}*/
 
 input:focus::placeholder {
   color: transparent;

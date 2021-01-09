@@ -1,0 +1,10 @@
+.top-right {
+  background-color: white;
+  border-radius: 15px;
+  position: fixed;
+  right: 60px;
+  top: 11px;
+  z-index: 1000;
+  padding: 5px 10px;
+  font-size: 0.9em;
+}

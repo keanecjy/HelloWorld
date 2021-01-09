@@ -11,11 +11,6 @@ const LoginModal = () => {
   const handleSubmit = (event) => {
     setShow(false);
     event.preventDefault();
-    // Set initialized field to prevent modal from showing up again
-    // window.localStorage.setItem('initialized', 'yes');
-    // Name set
-    // window.localStorage.setItem('name', name);
-
     sendUserInput(name, image);
     sendMessage("Hello everybody, I'm " + name);
   };

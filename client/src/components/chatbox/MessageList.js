@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import ChatMessage from './ChatMessage';
 
 // const FAKE_MESSAGES = [...Array(120)].fill(0).map((value, index) => {
