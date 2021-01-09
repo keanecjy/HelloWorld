@@ -10,7 +10,6 @@ function ChatInput() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        console.log('Send');
         sendMessage(message);
         setMessage('');
       }}

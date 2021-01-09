@@ -16,4 +16,5 @@ export const fakeUsers = [...Array(TOTAL_USERS_COUNT)].fill(0).map((val, index) 
     Math.sin(index / 180),
   avatar: avatarList[(avatarList.length * Math.random()) << 0],
   username: 'User' + index.toString(10),
+  latestMessage: Math.random() < 0.5 ? 'Hello World!' : undefined,
 }));

@@ -18,7 +18,7 @@ function MessageList({ messages }) {
       {trimMessages(messages || []).map((message, index) => {
         return (
           <li key={index}>
-            <ChatMessage sender={message.sender} text={message.text} />
+            <ChatMessage sender={message.sender} text={message.text} senderId={message.senderId} />
           </li>
         );
       })}

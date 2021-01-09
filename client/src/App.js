@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+
 import './App.css';
 import { fakeUsers } from './util/fakeUsers';
 import NameHolder from './components/nameholder/NameHolder';
@@ -14,7 +15,7 @@ export const StateContext = React.createContext({});
 
 const SG_POSITION = { lat: 1.3521, lng: 103.8198 };
 
-const socket = io('http://localhost:5000', {
+const socket = io(SERVER_URL, {
   withCredentials: true,
   extraHeaders: {
     'my-custom-header': 'abcd',
@@ -33,6 +34,7 @@ function createMessageObj(data) {
   return {
     _id: data._id,
     sender: data.username,
+    senderId: data.userId,
     text: data.text,
   };
 }
@@ -64,8 +66,7 @@ function App() {
     socket.on('outputUser', (allUsers) => {
       allUsers.map((user) => console.log('user ' + user.username + ' joined'));
       const cleanedData = allUsers.map((user) => createUserObj(user));
-      console.log([...users, ...cleanedData]);
-      setUsers([...users, ...cleanedData]);
+      setUsers((prevUsers) => [...prevUsers, ...cleanedData]);
     });
 
     socket.on('outputMessage', (newMessages) => {
@@ -77,15 +78,15 @@ function App() {
         ids.set(msg.userId, msg.text);
       });
 
-      // const newUsers = users.map(user => {
-      //   if (ids.has(user._id)) {
-      //     return {...user, latestMessage: ids.get(user._id)};
-      //   } else {
-      //     return user;
-      //   }
-      // })
-      // console.log(newUsers)
-      // setUsers(newUsers)
+      setUsers((prevUsers) =>
+        prevUsers.map((usr) => {
+          if (ids.has(usr._id)) {
+            return { ...usr, latestMessage: ids.get(usr._id) };
+          } else {
+            return usr;
+          }
+        })
+      );
     });
 
     ['outputUpdateUser', 'outputPosition'].forEach((event) => {
@@ -93,7 +94,7 @@ function App() {
         newUsers.map((user) => console.log(user.username + ' was modified'));
         const cleanedData = newUsers.map((user) => createUserObj(user));
         const ids = new Set(cleanedData.map((u) => u._id));
-        setUsers([...newUsers, ...users.filter((u) => !ids.has(u._id))]);
+        setUsers((prevUsers) => [...newUsers, ...prevUsers.filter((u) => !ids.has(u._id))]);
       });
     });
 
@@ -104,7 +105,7 @@ function App() {
 
     socket.on('userLeft', (userId) => {
       console.log('user ' + userId + ' left' + ' called by ' + socket.id);
-      setUsers([...users.filter((u) => u._id !== userId)]);
+      setUsers((prevUsers) => [...prevUsers.filter((u) => u._id !== userId)]);
     });
 
     // get location
@@ -155,6 +156,7 @@ function App() {
     setImage,
     mapOptions,
     setMapOptions,
+    socketId: socket.id,
     currLocation,
     numOnline,
     sendMessage: (text) => socket.emit('inputMessage', { text: text }),

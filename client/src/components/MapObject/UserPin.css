@@ -1,32 +1,22 @@
 .user {
-  display: flex;
   position: absolute;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   transition: transform 0.3s;
   animation: smooth-entry 0.3s;
-  text-transform: uppercase;
-}
-
-.user-avatar {
-  width: 36px;
-  height: 36px;
-  color: #fff;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
 }
 
 .user-name {
   background-color: white;
-  padding-left: 2px;
-  padding-right: 2px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
   border-radius: 5px;
-  top: -25px;
   font-weight: bold;
   font-size: 14px;
+  text-transform: uppercase;
+  width: 80px;
+  text-align: center;
 }
 
 @keyframes smooth-entry {
