@@ -18,6 +18,33 @@ HelloWorld is an application designed for connecting users throughout the globe 
 During COVID-19, it's hard to meet other people. Due to the frustration and ongoing boredom people may face, we have decided to create a web application for people from all around the world to chat and make new friends!
 
 ## Quick Start
+### Installation
+1. Get a Google Maps API key by following the guide [here](https://developers.google.com/maps/documentation/javascript/get-api-key).  
+    Remember to enable Maps JavaScript API in your Google Cloud Platform.
+    
+2. Clone the repo
+   ``` cmd
+   git clone https://github.com/HelloWorldHnR/HelloWorld.git
+   ```
+
+3. Install NPM packages for server
+    ``` cmd
+    npm install
+    ```
+
+4. Install NPM packages for client
+    ``` cmd
+    cd client
+    npm install
+    ```
+
+5. Add a `.env` file in the client directory with your API
+    ```
+    REACT_APP_GMAPS_API = ENTER YOUR API
+    ```
+
+### Usage
+Run `npm run dev` in the command line to run the client and server locally.
 
 ## Contributors:
 
