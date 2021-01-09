@@ -7,6 +7,7 @@ import LoginModal from "./loginmodal/LoginModal";
 import GoogleMap from "./components/GoogleMap";
 import ChatBox from "./components/chatbox/ChatBox";
 import ReCenterIcon from './components/button/ReCenterIcon';
+import NumberOfUsers from './components/usercount/NumberOfUsers';
 
 const SERVER_URL = "http://localhost:5000";
 export const StateContext = React.createContext({});
@@ -157,6 +158,7 @@ function App() {
     mapOptions,
     setMapOptions,
     currLocation,
+    numOnline,
     sendMessage: (text) => socket.emit("inputMessage", { text: text }),
     sendUserInput: (name, image) => {
       socket.emit("inputUser", {
@@ -174,6 +176,7 @@ function App() {
       <StateContext.Provider value={contextProviderValue}>
         <LoginModal />
         <NameHolder />
+        <NumberOfUsers />
         <GoogleMap users={users} />
         <ReCenterIcon handleClick={() => setMapOptions({ center: currLocation, zoom: 15 })} />
         <ChatBox messages={messages} />
