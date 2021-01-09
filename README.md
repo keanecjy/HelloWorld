@@ -1,4 +1,4 @@
-![Intro image](client/images/HelloWorldIntro2.png)
+<img src='client/images/HelloWorldIntro2.png' alt='intro image' width='60%' />
 
 ## Feeling bored? Chat with people around the world!
 
