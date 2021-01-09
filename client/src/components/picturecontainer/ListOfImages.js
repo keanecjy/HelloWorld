@@ -1,6 +1,5 @@
 import React from 'react';
 import { listOfImages } from './imagesList';
-import { avatarList } from "../images";
 
 const ListOfImages = ({ currentSelected, handleSelection }) => {
   return (

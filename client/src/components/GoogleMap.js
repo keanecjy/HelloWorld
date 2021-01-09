@@ -38,7 +38,7 @@ function GoogleMap({ users }) {
         }))
       );
     }
-  }, [mapOptions]);
+  }, [mapOptions, users]);
 
   return (
     <div className={'google-map'}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import ChatMessage from './ChatMessage';
 
 // const FAKE_MESSAGES = [...Array(120)].fill(0).map((value, index) => {
@@ -18,7 +18,7 @@ function MessageList({ messages }) {
       {trimMessages(messages || []).map((message, index) => {
         return (
           <li key={index}>
-            <ChatMessage sender={message.sender} text={message.text} />
+            <ChatMessage sender={message.sender} text={message.text} senderId={message.senderId} />
           </li>
         );
       })}

@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
+import React, { useState, useEffect } from 'react';
+import io from 'socket.io-client';
 
-import "./App.css";
-import logo from "./HelloWorldLogo.svg";
-import { fakeUsers } from "./util/fakeUsers";
-import NameHolder from "./components/nameholder/NameHolder";
-import LoginModal from "./loginmodal/LoginModal";
-import GoogleMap from "./components/GoogleMap";
-import ChatBox from "./components/chatbox/ChatBox";
+import './App.css';
+import logo from './HelloWorldLogo.svg';
+import { fakeUsers } from './util/fakeUsers';
+import NameHolder from './components/nameholder/NameHolder';
+import LoginModal from './loginmodal/LoginModal';
+import GoogleMap from './components/GoogleMap';
+import ChatBox from './components/chatbox/ChatBox';
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = 'http://localhost:5000';
 export const StateContext = React.createContext({});
 
 const SG_POSITION = { lat: 1.3521, lng: 103.8198 };
 
-const socket = io("http://localhost:5000", {
+const socket = io('http://localhost:5000', {
   withCredentials: true,
   extraHeaders: {
-    "my-custom-header": "abcd"
-  }
+    'my-custom-header': 'abcd',
+  },
 });
 
 function createUserObj(data) {
   return {
     ...data,
     lat: parseFloat(data.lat),
-    lng: parseFloat(data.lng)
+    lng: parseFloat(data.lng),
   };
 }
 
@@ -33,15 +33,16 @@ function createMessageObj(data) {
   return {
     _id: data._id,
     sender: data.username,
-    text: data.text
+    senderId: data.userId,
+    text: data.text,
   };
 }
 
 function App() {
   // Global Variables
   const [initialScreen, setScreen] = useState(true);
-  const [name, setName] = useState("");
-  const [image, setImage] = useState("boy1");
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('boy1');
   const [mapOptions, setMapOptions] = useState(null);
 
   const [users, setUsers] = useState(fakeUsers);
@@ -54,70 +55,65 @@ function App() {
   const [currLocation, setCurrLocation] = useState(SG_POSITION);
 
   useEffect(() => {
-    socket.on("connect", (message) => {
-      console.log("A new user has connected");
+    socket.on('connect', (message) => {
+      console.log('A new user has connected');
     });
 
-    socket.on("status", (msg) => {
+    socket.on('status', (msg) => {
       console.log(msg);
     });
 
-    socket.on("outputUser", (allUsers) => {
-      allUsers.map((user) => console.log("user " + user.username + " joined"));
+    socket.on('outputUser', (allUsers) => {
+      allUsers.map((user) => console.log('user ' + user.username + ' joined'));
       const cleanedData = allUsers.map((user) => createUserObj(user));
-      console.log([...users, ...cleanedData]);
-      setUsers([...users, ...cleanedData]);
+      setUsers((prevUsers) => [...prevUsers, ...cleanedData]);
     });
 
-    socket.on("outputMessage", (newMessages) => {
+    socket.on('outputMessage', (newMessages) => {
       const modifiedMsg = newMessages.map((msg) => createMessageObj(msg));
-      setMessages(prevMessages => ([...prevMessages, ...modifiedMsg]));
+      setMessages((prevMessages) => [...prevMessages, ...modifiedMsg]);
 
       const ids = new Map();
-      newMessages.forEach(msg => {
+      newMessages.forEach((msg) => {
         ids.set(msg.userId, msg.text);
-      })
+      });
 
-      // const newUsers = users.map(user => {
-      //   if (ids.has(user._id)) {
-      //     return {...user, latestMessage: ids.get(user._id)};
-      //   } else {
-      //     return user;
-      //   }
-      // })
-      // console.log(newUsers)
-      // setUsers(newUsers)
+      setUsers(prevUsers => prevUsers.map(usr => {
+        if (ids.has(usr._id)) {
+          return {...usr, latestMessage: ids.get(usr._id)};
+        } else {
+          return usr;
+        }
+      }))
     });
 
-    ["outputUpdateUser", "outputPosition"].forEach((event) => {
+    ['outputUpdateUser', 'outputPosition'].forEach((event) => {
       socket.on(event, (newUsers) => {
-        newUsers.map((user) =>
-          console.log(user.username + " was modified")
-        );
+        newUsers.map((user) => console.log(user.username + ' was modified'));
         const cleanedData = newUsers.map((user) => createUserObj(user));
         const ids = new Set(cleanedData.map((u) => u._id));
-        setUsers([...newUsers, ...users.filter((u) => !ids.has(u._id))]);
+        setUsers((prevUsers) => [...newUsers, ...prevUsers.filter((u) => !ids.has(u._id))]);
       });
     });
 
-    socket.on("onlineUsers", (number) => {
-      console.log("users: " + number);
+    socket.on('onlineUsers', (number) => {
+      console.log('users: ' + number);
       setNumOnline(number + fakeUsers.length);
     });
 
-    socket.on("userLeft", (userId) => {
-      console.log("user " + userId + " left" + " called by " + socket.id);
-      setUsers([...users.filter((u) => u._id !== userId)]);
+    socket.on('userLeft', (userId) => {
+      console.log('user ' + userId + ' left' + ' called by ' + socket.id);
+      setUsers((prevUsers) => [...prevUsers.filter((u) => u._id !== userId)]);
     });
 
     // get location
-    if ("geolocation" in navigator) {
-      console.log("Location enabled");
+    if ('geolocation' in navigator) {
+      console.log('Location enabled');
 
       navigator.geolocation.getCurrentPosition((position) => {
         const location = {
           lat: position.coords.latitude,
-          lng: position.coords.longitude
+          lng: position.coords.longitude,
         };
         setCurrLocation(location);
         setMapOptions({ center: location, zoom: 15 });
@@ -125,30 +121,30 @@ function App() {
 
       if (isUserInputted) {
         navigator.geolocation.watchPosition((position) => {
-          console.log("geolocation changed");
+          console.log('geolocation changed');
           if (
             currLocation.lat !== position.coords.latitude ||
             currLocation.lng !== position.coords.longitude
           ) {
             const location = {
               lat: position.coords.latitude,
-              lng: position.coords.longitude
+              lng: position.coords.longitude,
             };
 
             setCurrLocation(location);
             console.log(location);
-            socket.emit("inputPosition", location);
+            socket.emit('inputPosition', location);
           }
         });
       }
     } else {
-      console.log("Location disabled");
+      console.log('Location disabled');
     }
   }, []);
 
   useEffect(() => {
-    console.log("Changed name/avatar");
-    socket.emit("inputUpdateUser", { username: name, avatar: image });
+    console.log('Changed name/avatar');
+    socket.emit('inputUpdateUser', { username: name, avatar: image });
   }, [name, image]);
 
   const contextProviderValue = {
@@ -158,16 +154,17 @@ function App() {
     setImage,
     mapOptions,
     setMapOptions,
-    sendMessage: (text) => socket.emit("inputMessage", { text: text }),
+    socketId: socket.id,
+    sendMessage: (text) => socket.emit('inputMessage', { text: text }),
     sendUserInput: (name, image) => {
-      socket.emit("inputUser", {
+      socket.emit('inputUser', {
         username: name,
         avatar: image,
         lat: currLocation.lat,
-        lng: currLocation.lng
+        lng: currLocation.lng,
       });
       setIsUserInputted(true);
-    }
+    },
   };
 
   return (
@@ -177,7 +174,7 @@ function App() {
         <NameHolder />
         <GoogleMap users={users} />
         <button
-          className={"recenter-button"}
+          className={'recenter-button'}
           onClick={() => setMapOptions({ center: currLocation, zoom: 15 })}
         >
           RE-CENTER
