@@ -36,9 +36,9 @@ input {
   opacity: 0.95;
 }
 
-input::placeholder {
-  opacity: 0.6;
-}
+/*input::placeholder {*/
+/*  opacity: 0.6;*/
+/*}*/
 
 input:focus::placeholder {
   color: transparent;

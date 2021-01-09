@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { StateContext } from '../../App';
+import { IoMdSend } from 'react-icons/all';
 
 function ChatInput() {
   const { sendMessage } = useContext(StateContext);
@@ -14,16 +15,16 @@ function ChatInput() {
       }}
       className={'chat-form'}
     >
-      <input
-        className={'chat-form-input'}
-        onChange={(e) => setMessage(e.target.value)}
-        value={message}
-        placeholder={'Type a message...'}
-        type={'text'}
-      />
-      <button className={'chat-send-button'} type={'submit'}>
-        Send
-      </button>
+      <div className="standard-row">
+        <input
+          className={'chat-form-input'}
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
+          placeholder={'Type a message...'}
+          type={'text'}
+        />
+        <IoMdSend color={'#40A7E3'} size={'1.4em'} type={'submit'} />
+      </div>
     </form>
   );
 }
