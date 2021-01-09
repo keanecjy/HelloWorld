@@ -45,8 +45,8 @@ function App() {
   const [mapOptions, setMapOptions] = useState(null);
 
   const [users, setUsers] = useState(fakeUsers);
-  const [numOnline, setNumOnline] = useState(0);
   const [messages, setMessages] = useState([]);
+  const [numOnline, setNumOnline] = useState(0);
 
   const [isUserInputted, setIsUserInputted] = useState(false);
 
@@ -65,14 +65,28 @@ function App() {
     socket.on("outputUser", (allUsers) => {
       allUsers.map((user) => console.log("user " + user.username + " joined"));
       const cleanedData = allUsers.map((user) => createUserObj(user));
+      console.log([...users, ...cleanedData]);
       setUsers([...users, ...cleanedData]);
     });
 
     socket.on("outputMessage", (newMessages) => {
-      newMessages.map((message) => console.log(message.text));
-      console.log(newMessages);
       const modifiedMsg = newMessages.map((msg) => createMessageObj(msg));
-      setMessages([...modifiedMsg, ...messages]);
+      setMessages(prevMessages => ([...prevMessages, ...modifiedMsg]));
+
+      const ids = new Map();
+      newMessages.forEach(msg => {
+        ids.set(msg.userId, msg.text);
+      })
+
+      // const newUsers = users.map(user => {
+      //   if (ids.has(user._id)) {
+      //     return {...user, latestMessage: ids.get(user._id)};
+      //   } else {
+      //     return user;
+      //   }
+      // })
+      // console.log(newUsers)
+      // setUsers(newUsers)
     });
 
     ["outputUpdateUser", "outputPosition"].forEach((event) => {
@@ -144,10 +158,7 @@ function App() {
     setImage,
     mapOptions,
     setMapOptions,
-    sendMessage: (text) => {
-      console.log("Called");
-      socket.emit("inputMessage", { text: text });
-    },
+    sendMessage: (text) => socket.emit("inputMessage", { text: text }),
     sendUserInput: (name, image) => {
       socket.emit("inputUser", {
         username: name,
