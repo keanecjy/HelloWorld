@@ -22,14 +22,14 @@ function GoogleMap({ users }) {
 
   useEffect(() => {
     if (mapOptions && mapOptions.bounds) {
-      const clusters = supercluster(users, {
+      const newClusters = supercluster(users, {
         minZoom: 0,
         maxZoom: 16,
         radius: 60,
       });
 
       setClusters(
-        clusters(mapOptions).map(({ wx, wy, numPoints, points }) => ({
+        newClusters(mapOptions).map(({ wx, wy, numPoints, points }) => ({
           lat: wy,
           lng: wx,
           numPoints: numPoints,
