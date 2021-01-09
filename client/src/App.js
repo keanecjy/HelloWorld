@@ -10,12 +10,12 @@ import ChatBox from './components/chatbox/ChatBox';
 import ReCenterIcon from './components/button/ReCenterIcon';
 import NumberOfUsers from './components/usercount/NumberOfUsers';
 
-const SERVER_URL = 'http://localhost:5000';
+// const SERVER_URL = 'http://localhost:5000';
 export const StateContext = React.createContext({});
 
 const SG_POSITION = { lat: 1.3521, lng: 103.8198 };
 
-const socket = io(SERVER_URL, {
+const socket = io("/", {
   withCredentials: true,
   extraHeaders: {
     'my-custom-header': 'abcd',
