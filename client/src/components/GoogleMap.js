@@ -60,6 +60,7 @@ function GoogleMap({ users }) {
                   username={groups.points[0].username}
                   avatar={groups.points[0].avatar}
                   key={groups.points[0]._id}
+                  message={groups.points[0].latestMessage || null}
                 />
               );
             } else {

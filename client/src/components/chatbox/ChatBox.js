@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StateContext } from '../../App';
-import { Modal } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import './styles.css';
 import ChatTitle from './ChatTitle';
 import MessageList from './MessageList';
@@ -15,14 +13,16 @@ function scrollToBottom(id) {
 function ChatBox({ messages }) {
   const [isChatVisible, toggleChatVisibility] = useState(true);
   useEffect(() => {
-    if (isChatVisible) scrollToBottom('messages');
-  }, []);
+    if (isChatVisible) {
+      scrollToBottom("messages");
+    }
+  }, [messages, isChatVisible]);
 
   return (
     <div className={'column-flex'}>
       <ChatTitle onMinimise={toggleChatVisibility}/>
       {isChatVisible && (
-        <div className={'chat-body'} id={'messages'}>
+        <div className={'chat-body'} id={"messages"}>
           <MessageList messages={messages}/>
         </div>
       )}
