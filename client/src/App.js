@@ -2,21 +2,11 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import './App.css';
 import { fakeUsers } from './util/fakeUsers';
-import NameHolder from './components/nameholder/NameHolder';
-import LoginModal from './loginmodal/LoginModal';
-import ChatBox from './components/chatbox/ChatBox';
-import GoogleMap from './components/GoogleMap';
-import ReCenterIcon from './components/button/ReCenterIcon';
-import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
-
-import "./App.css";
-import logo from "./HelloWorldLogo.svg";
-import { fakeUsers } from "./util/fakeUsers";
 import NameHolder from "./components/nameholder/NameHolder";
 import LoginModal from "./loginmodal/LoginModal";
 import GoogleMap from "./components/GoogleMap";
 import ChatBox from "./components/chatbox/ChatBox";
+import ReCenterIcon from './components/button/ReCenterIcon';
 
 const SERVER_URL = "http://localhost:5000";
 export const StateContext = React.createContext({});
