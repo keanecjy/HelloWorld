@@ -1,8 +1,9 @@
-# Welcome to the HelloWorld App
-![text](client/images/HelloWorldIntro.png)
+<div>
+   <h1>Welcome to the HelloWorld App</h1>
+   <img style="float:right" src='client/images/HelloWorldIntro.png' alt='App icon' />
+</div>
 
 Feeling bored? Chat with people around the world!
-
 HelloWorld is an application designed for connecting users throughout the globe with an interactive map display.
 
 ## Screenshots
