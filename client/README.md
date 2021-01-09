@@ -18,7 +18,7 @@ HelloWorld is an application designed for connecting users throughout the globe 
 During COVID-19, it's hard to meet other people. Due to the frustration and ongoing boredom people may face, we have decided to create a web application for people from all around the world to chat and make new friends!
 
 ## Quick Start
-### Installation
+### Setting up
 1. Get a Google Maps API key by following the guide [here](https://developers.google.com/maps/documentation/javascript/get-api-key).  
     Remember to enable Maps JavaScript API in your Google Cloud Platform.
     
@@ -42,6 +42,14 @@ During COVID-19, it's hard to meet other people. Due to the frustration and ongo
     ```
     REACT_APP_GMAPS_API = ENTER YOUR API
     ```
+
+6. Add another `.env` file in your root directory with your MongoDB Atlas connection string
+   ```
+   mongoURI = mongodb://(MongoDB connection string)
+   mongoAtlasURI = mongodb+srv://(MongoDB Atlas connection string)
+   ```
+   Also ensure that you have MongoDB installed locally
+
 
 ### Usage
 Run `npm run dev` in the command line to run the client and server locally.
