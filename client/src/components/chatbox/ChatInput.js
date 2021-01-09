@@ -21,10 +21,7 @@ function ChatInput() {
         placeholder={'Type a message...'}
         type={'text'}
       />
-      <button
-        className={"chat-send-button"}
-        type={"submit"}
-      >
+      <button className={'chat-send-button'} type={'submit'}>
         Send
       </button>
     </form>

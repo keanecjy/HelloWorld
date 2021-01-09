@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
 import './App.css';
-import logo from './HelloWorldLogo.svg';
 import { fakeUsers } from './util/fakeUsers';
 import NameHolder from './components/nameholder/NameHolder';
 import LoginModal from './loginmodal/LoginModal';
@@ -14,7 +13,7 @@ export const StateContext = React.createContext({});
 
 const SG_POSITION = { lat: 1.3521, lng: 103.8198 };
 
-const socket = io('http://localhost:5000', {
+const socket = io(SERVER_URL, {
   withCredentials: true,
   extraHeaders: {
     'my-custom-header': 'abcd',
@@ -40,7 +39,6 @@ function createMessageObj(data) {
 
 function App() {
   // Global Variables
-  const [initialScreen, setScreen] = useState(true);
   const [name, setName] = useState('');
   const [image, setImage] = useState('boy1');
   const [mapOptions, setMapOptions] = useState(null);
@@ -78,13 +76,15 @@ function App() {
         ids.set(msg.userId, msg.text);
       });
 
-      setUsers(prevUsers => prevUsers.map(usr => {
-        if (ids.has(usr._id)) {
-          return {...usr, latestMessage: ids.get(usr._id)};
-        } else {
-          return usr;
-        }
-      }))
+      setUsers((prevUsers) =>
+        prevUsers.map((usr) => {
+          if (ids.has(usr._id)) {
+            return { ...usr, latestMessage: ids.get(usr._id) };
+          } else {
+            return usr;
+          }
+        })
+      );
     });
 
     ['outputUpdateUser', 'outputPosition'].forEach((event) => {
@@ -170,7 +170,7 @@ function App() {
   return (
     <div className="App">
       <StateContext.Provider value={contextProviderValue}>
-        {initialScreen && <LoginModal />}
+        <LoginModal />
         <NameHolder />
         <GoogleMap users={users} />
         <button

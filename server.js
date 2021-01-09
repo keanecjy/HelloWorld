@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
         .then((user) => {
           if (user) {
             const newMessage = new Message({
-              _id: Math.floor(Date.now() / 1000) + "-" + socket.id,
+              _id: Math.floor(Date.now() / 1000) + '-' + socket.id,
               username: user.username,
               userId: socket.id,
               text: data.text,

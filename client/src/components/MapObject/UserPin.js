@@ -21,9 +21,7 @@ function UserPin({ username, avatar, message }) {
           }}
         />
       </div>
-      <p className={'user-name'}>
-        {username || 'unnamed'}
-      </p>
+      <p className={'user-name'}>{username || 'unnamed'}</p>
     </div>
   );
 }
